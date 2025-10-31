@@ -9,6 +9,17 @@ const processedPosts = new WeakSet<Element>();
 // AI session
 let aiSession: any = null;
 
+// AI Settings
+interface AISettings {
+  temperature: number;
+  topK: number;
+}
+
+let currentSettings: AISettings = {
+  temperature: 0.8,
+  topK: 3,
+};
+
 // Category colors
 const CATEGORY_COLORS: Record<string, string> = {
   humblebrag: '#FFB84D', // Orange
@@ -26,6 +37,16 @@ const CATEGORY_COLORS: Record<string, string> = {
   other: '#95A5A6', // Gray
 };
 
+// Listen for settings updates
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'SETTINGS_UPDATED') {
+    console.log('LinkedIn Summarizer: Settings updated!', message.settings);
+    currentSettings = message.settings;
+    // Reinitialize AI with new settings
+    initAI();
+  }
+});
+
 // Wait for the page to be ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
@@ -37,6 +58,17 @@ async function init() {
   console.log('LinkedIn Summarizer: Initializing...');
   console.log('LinkedIn Summarizer: Current URL:', window.location.href);
   console.log('LinkedIn Summarizer: Document ready state:', document.readyState);
+
+  // Load settings from storage
+  try {
+    const result = await chrome.storage.sync.get('aiSettings');
+    if (result.aiSettings) {
+      currentSettings = result.aiSettings;
+      console.log('LinkedIn Summarizer: Loaded settings from storage', currentSettings);
+    }
+  } catch (error) {
+    console.error('LinkedIn Summarizer: Failed to load settings', error);
+  }
 
   // Inject toast styles
   injectToastStyles();
@@ -95,12 +127,9 @@ async function initAI() {
     }
 
     // @ts-ignore
-    const { defaultTopK, defaultTemperature } = await self.LanguageModel.params();
-
-    // @ts-ignore
     aiSession = await self.LanguageModel.create({
-      temperature: defaultTemperature || 0.8,
-      topK: defaultTopK || 3,
+      temperature: currentSettings.temperature,
+      topK: currentSettings.topK,
       initialPrompts: [
         {
           role: 'system',
@@ -160,7 +189,9 @@ If there's ANY bait tactic, call it out as the primary label. Don't give them cr
       ],
     });
 
-    console.log('LinkedIn Summarizer: Chrome AI initialized successfully!');
+    console.log(
+      `LinkedIn Summarizer: Chrome AI initialized successfully! (temp: ${currentSettings.temperature}, topK: ${currentSettings.topK})`
+    );
     logTokenStats();
   } catch (error) {
     console.error('LinkedIn Summarizer: AI initialization error:', error);
