@@ -1,0 +1,17 @@
+{
+  "name": "linkedin-summarize-post-extension",
+  "version": "1.0.0",
+  "description": "Browser extension to summarize LinkedIn posts",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "build": "tsup && node scripts/post-build.js",
+    "dev": "tsup --watch"
+  },
+  "keywords": ["linkedin", "browser-extension", "summarize"],
+  "devDependencies": {
+    "@types/chrome": "^0.0.270",
+    "tsup": "^8.5.0",
+    "typescript": "^5.6.3"
+  }
+}
