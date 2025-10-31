@@ -1,17 +1,50 @@
 {
-  "name": "linkedin-summarize-post-extension",
+  "name": "linkedin-summarize-post",
   "version": "1.0.0",
-  "description": "Browser extension to summarize LinkedIn posts",
-  "author": "",
-  "license": "ISC",
+  "description": "Browser extension to summarize and analyze LinkedIn posts using Chrome AI",
   "scripts": {
-    "build": "tsup && node scripts/post-build.js",
-    "dev": "tsup --watch"
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build && tsup",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
   },
-  "keywords": ["linkedin", "browser-extension", "summarize"],
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/common": "^20.3.0",
+    "@angular/compiler": "^20.3.0",
+    "@angular/core": "^20.3.0",
+    "@angular/forms": "^20.3.0",
+    "@angular/platform-browser": "^20.3.0",
+    "@angular/router": "^20.3.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
   "devDependencies": {
+    "@angular/build": "^20.3.8",
+    "@angular/cli": "^20.3.8",
+    "@angular/compiler-cli": "^20.3.0",
     "@types/chrome": "^0.0.270",
+    "@types/jasmine": "~5.1.0",
+    "jasmine-core": "~5.9.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
     "tsup": "^8.5.0",
-    "typescript": "^5.6.3"
+    "typescript": "~5.9.2"
   }
 }
