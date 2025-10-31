@@ -12,6 +12,23 @@ const processedPosts = new WeakSet<Element>();
 // AI session
 let aiSession: any = null;
 
+// Category colors
+const CATEGORY_COLORS: Record<string, string> = {
+  humblebrag: "#FFB84D", // Orange
+  ragebait: "#FF4444", // Red
+  "thought-leadership": "#4A90E2", // Blue
+  "genuine-insight": "#50C878", // Emerald green
+  "self-promotion": "#9B59B6", // Purple
+  "engagement-bait": "#E74C3C", // Bright red
+  inspirational: "#F39C12", // Golden
+  educational: "#3498DB", // Light blue
+  "job-posting": "#27AE60", // Green
+  "made-up-story": "#FF6B6B", // Coral red
+  cringe: "#FF1493", // Deep pink
+  "virtue-signaling": "#FF8C00", // Dark orange
+  other: "#95A5A6", // Gray
+};
+
 // Wait for the page to be ready
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init);
@@ -26,6 +43,9 @@ async function init() {
     "LinkedIn Summarizer: Document ready state:",
     document.readyState
   );
+
+  // Inject toast styles
+  injectToastStyles();
 
   // Initialize Chrome AI
   await initAI();
@@ -91,15 +111,47 @@ async function initAI() {
       initialPrompts: [
         {
           role: "system",
-          content: `You are an expert at analyzing social media posts. When given a LinkedIn post, you should:
-1. Provide a concise 2-3 sentence summary
-2. Identify the tone/category from these options: humblebrag, ragebait, thought-leadership, genuine-insight, self-promotion, engagement-bait, inspirational, educational, job-posting, or other
+          content: `You are a ruthlessly skeptical LinkedIn BS detector. Your job is to see through performative content and identify the REAL intent behind posts.
 
-Format your response EXACTLY as:
-SUMMARY: [your summary here]
-LABEL: [category]
+ALWAYS ASK: What is this person REALLY trying to do?
 
-Be direct and concise.`,
+Most LinkedIn posts are self-promotion wrapped in:
+- "Lessons learned" (humblebrag)
+- "Inspirational stories" (look at me)
+- "Hot takes" (engagement bait)
+- "Sharing knowledge" (hire me / notice me)
+- "Gratitude posts" (subtle flex)
+
+When you see ANY of these wrappers, CALL IT OUT. Don't be fooled by:
+- ❌ "I learned X from Y situation" → self-promotion / humblebrag
+- ❌ "Here are 5 tips on X" → self-promotion (establishing authority)
+- ❌ "Yesterday something happened..." → probably made-up-story or humblebrag
+- ❌ "Agree?" or "Thoughts?" at the end → engagement-bait
+- ❌ Suspiciously perfect conversations → made-up-story
+- ❌ "I'm grateful for..." → often humblebrag in disguise
+
+BE HARSH. If the post's primary purpose is to promote themselves, their expertise, or their personal brand - that's SELF-PROMOTION, regardless of the wrapper.
+
+When analyzing, use the AUTHOR's title/role to understand their intent:
+- "CEO" / "Founder" → likely self-promotion for their company
+- "Thought Leader" / "Coach" → selling their services
+- "Recruiter" → job-posting or engagement-bait to grow network
+- Impressive title + story → humblebrag
+
+Provide 1-2 labels. Put the REAL intent first, wrapper second (if there's genuine value).
+
+Categories: self-promotion, humblebrag, engagement-bait, ragebait, made-up-story, virtue-signaling, cringe, thought-leadership, genuine-insight, educational, inspirational, job-posting, other
+
+Format EXACTLY as:
+SUMMARY: [brutally honest summary that identifies the real purpose]
+LABELS: [real-intent], [wrapper if applicable]
+
+Examples:
+- "LABELS: self-promotion, humblebrag"
+- "LABELS: engagement-bait, ragebait"
+- "LABELS: made-up-story, self-promotion"
+
+Default to assuming self-promotion unless proven otherwise. Be savage.`,
         },
       ],
     });
@@ -133,6 +185,117 @@ function logTokenStats() {
       "LinkedIn Summarizer: Running low on tokens, will reinitialize on next error"
     );
   }
+}
+
+function injectToastStyles() {
+  if (document.getElementById("linkedin-summarizer-styles")) return;
+
+  const style = document.createElement("style");
+  style.id = "linkedin-summarizer-styles";
+  style.textContent = `
+    .linkedin-summarizer-toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      max-width: 400px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 16px;
+      z-index: 10000;
+      animation: slideIn 0.3s ease-out;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+    }
+
+    .linkedin-summarizer-toast.hiding {
+      animation: slideOut 0.3s ease-out forwards;
+    }
+
+    .linkedin-summarizer-toast-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 8px;
+    }
+
+    .linkedin-summarizer-toast-labels {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .linkedin-summarizer-toast-label {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: white;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .linkedin-summarizer-toast-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #666;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+    }
+
+    .linkedin-summarizer-toast-close:hover {
+      background: #f0f0f0;
+    }
+
+    .linkedin-summarizer-toast-summary {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #333;
+    }
+
+    .linkedin-summarizer-toast-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  `;
+  document.head.appendChild(style);
 }
 
 function addSummarizeButtons() {
@@ -253,6 +416,25 @@ async function handleSummarizeClick(post: Element) {
   const postUrn = post.getAttribute("data-urn");
   console.log("Post URN:", postUrn);
 
+  // Get author information
+  let authorName = "";
+  let authorTitle = "";
+
+  const actorTitle = post.querySelector(".update-components-actor__title");
+  if (actorTitle) {
+    authorName = actorTitle.textContent?.trim() || "";
+  }
+
+  const actorDescription = post.querySelector(
+    ".update-components-actor__description"
+  );
+  if (actorDescription) {
+    authorTitle = actorDescription.textContent?.trim() || "";
+  }
+
+  console.log("Author:", authorName);
+  console.log("Title:", authorTitle);
+
   // Get the post text content
   const postContent = post.querySelector(".update-components-text");
   let postText = "";
@@ -293,7 +475,13 @@ async function handleSummarizeClick(post: Element) {
   try {
     console.log("LinkedIn Summarizer: Sending to AI...");
 
-    const prompt = `Analyze this LinkedIn post:\n\n${postText}`;
+    // Build context-aware prompt
+    let prompt = "Analyze this LinkedIn post:\n\n";
+    if (authorTitle) {
+      prompt += `AUTHOR: ${authorName}\nTITLE: ${authorTitle}\n\n`;
+    }
+    prompt += `POST:\n${postText}`;
+
     const response = await aiSession.prompt(prompt);
 
     console.log("=== AI RESPONSE START ===");
@@ -303,8 +491,8 @@ async function handleSummarizeClick(post: Element) {
     // Log token usage after each prompt
     logTokenStats();
 
-    // Show the result in an alert (you can change this to a better UI later)
-    alert(response);
+    // Parse and display the response in a toast
+    displaySummaryToast(response);
   } catch (error) {
     console.error("LinkedIn Summarizer: AI error:", error);
 
@@ -323,13 +511,17 @@ async function handleSummarizeClick(post: Element) {
       // Retry the request with new session
       try {
         if (aiSession) {
-          const retryPrompt = `Analyze this LinkedIn post:\n\n${postText}`;
+          let retryPrompt = "Analyze this LinkedIn post:\n\n";
+          if (authorTitle) {
+            retryPrompt += `AUTHOR: ${authorName}\nTITLE: ${authorTitle}\n\n`;
+          }
+          retryPrompt += `POST:\n${postText}`;
           const retryResponse = await aiSession.prompt(retryPrompt);
           console.log("=== AI RESPONSE (RETRY) START ===");
           console.log(retryResponse);
           console.log("=== AI RESPONSE (RETRY) END ===");
           logTokenStats();
-          alert(retryResponse);
+          displaySummaryToast(retryResponse);
           return;
         }
       } catch (retryError) {
@@ -343,6 +535,66 @@ async function handleSummarizeClick(post: Element) {
       }\n\nTry clicking the button again.`
     );
   }
+}
+
+function displaySummaryToast(aiResponse: string) {
+  // Parse the AI response - support both LABEL and LABELS
+  const summaryMatch = aiResponse.match(/SUMMARY:\s*(.+?)(?=LABELS?:|$)/s);
+  const labelsMatch = aiResponse.match(/LABELS?:\s*(.+?)$/s);
+
+  const summary = summaryMatch ? summaryMatch[1].trim() : aiResponse;
+  const labelsText = labelsMatch
+    ? labelsMatch[1].trim().toLowerCase()
+    : "other";
+
+  // Split multiple labels by comma
+  const labels = labelsText
+    .split(/[,;/]+/)
+    .map((l) => l.trim())
+    .filter((l) => l);
+
+  // Create toast element
+  const toast = document.createElement("div");
+  toast.className = "linkedin-summarizer-toast";
+
+  // Generate label badges HTML
+  const labelBadgesHTML = labels
+    .map((label) => {
+      const color = CATEGORY_COLORS[label] || CATEGORY_COLORS.other;
+      return `<span class="linkedin-summarizer-toast-label" style="background-color: ${color}">
+      ${label.replace(/-/g, " ")}
+    </span>`;
+    })
+    .join("");
+
+  toast.innerHTML = `
+    <div class="linkedin-summarizer-toast-header">
+      <div class="linkedin-summarizer-toast-labels">
+        ${labelBadgesHTML}
+      </div>
+      <button class="linkedin-summarizer-toast-close" aria-label="Close">×</button>
+    </div>
+    <div class="linkedin-summarizer-toast-title">Summary</div>
+    <div class="linkedin-summarizer-toast-summary">${summary}</div>
+  `;
+
+  // Add close button handler
+  const closeBtn = toast.querySelector(".linkedin-summarizer-toast-close");
+  closeBtn?.addEventListener("click", () => {
+    toast.classList.add("hiding");
+    setTimeout(() => toast.remove(), 300);
+  });
+
+  // Add to page
+  document.body.appendChild(toast);
+
+  // Auto-remove after 30 seconds
+  setTimeout(() => {
+    if (toast.parentElement) {
+      toast.classList.add("hiding");
+      setTimeout(() => toast.remove(), 300);
+    }
+  }, 30000);
 }
 
 // Listen for messages from background script
