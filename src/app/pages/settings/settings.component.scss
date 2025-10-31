@@ -3,6 +3,17 @@
   max-width: 100%;
 }
 
+.loading-state {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+}
+
 .header {
   display: flex;
   align-items: center;

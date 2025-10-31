@@ -4,6 +4,11 @@
     <h1>AI Settings</h1>
   </div>
 
+  @if (loading()) {
+  <div class="loading-state">
+    <p>Loading settings...</p>
+  </div>
+  } @else {
   <form (ngSubmit)="onSave()" class="settings-form">
     <div class="form-group">
       <label for="temperature">
@@ -111,6 +116,7 @@
     </div>
     }
   </form>
+  }
 
   <div class="info-box">
     <h3>💡 Tips</h3>

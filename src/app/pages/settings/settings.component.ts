@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { SettingsService } from '../../services/settings.service';
@@ -6,10 +6,11 @@ import { SettingsService } from '../../services/settings.service';
 @Component({
   selector: 'app-settings',
   imports: [FormsModule, RouterLink],
+  providers: [SettingsService],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
 })
-export class SettingsComponent {
+export class SettingsComponent implements OnInit {
   temperature = 0.8;
   topK = 3;
   systemPrompt = '';
@@ -17,12 +18,31 @@ export class SettingsComponent {
   message = signal('');
   isError = signal(false);
   showResetConfirm = signal(false);
+  loading = signal(true);
 
   constructor(private settingsService: SettingsService) {
-    const currentSettings = this.settingsService.settings();
-    this.temperature = currentSettings.temperature;
-    this.topK = currentSettings.topK;
-    this.systemPrompt = currentSettings.systemPrompt;
+    console.log('🔷 SettingsComponent constructor');
+    // React to settings changes using Angular effect
+    effect(() => {
+      const currentSettings = this.settingsService.settings();
+      console.log('🔄 Effect triggered - settings changed:', currentSettings);
+      this.temperature = currentSettings.temperature;
+      this.topK = currentSettings.topK;
+      this.systemPrompt = currentSettings.systemPrompt;
+      console.log('🔄 Component values updated:', {
+        temperature: this.temperature,
+        topK: this.topK,
+        promptLength: this.systemPrompt.length,
+      });
+    });
+  }
+
+  async ngOnInit() {
+    console.log('🔷 [POPUP OPENED] SettingsComponent ngOnInit - loading settings from storage');
+    // ALWAYS reload from storage when popup opens
+    await this.settingsService.loadSettings();
+    console.log('🟢 [POPUP OPENED] Settings loaded from storage, hiding loading state');
+    this.loading.set(false);
   }
 
   get isUsingDefaults(): boolean {

@@ -65,40 +65,54 @@ const DEFAULT_SETTINGS: AISettings = {
   systemPrompt: DEFAULT_SYSTEM_PROMPT,
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SettingsService {
   settings = signal<AISettings>(DEFAULT_SETTINGS);
 
   constructor() {
-    this.loadSettings();
+    console.log('🔷 SettingsService constructor - NEW INSTANCE created');
   }
 
   async loadSettings(): Promise<void> {
     try {
+      console.log('🔵 [LOAD] Loading settings from chrome.storage.sync...');
       const result = await chrome.storage.sync.get('aiSettings');
+      console.log('🔵 [LOAD] Raw storage result:', result);
+      console.log('🔵 [LOAD] Has aiSettings key:', 'aiSettings' in result);
+
       if (result['aiSettings']) {
+        console.log('🟢 [LOAD] Found saved settings:', result['aiSettings']);
         this.settings.set(result['aiSettings']);
+        console.log('🟢 [LOAD] Signal updated to:', this.settings());
+      } else {
+        console.log('⚠️ [LOAD] No saved settings in storage, using defaults');
+        this.settings.set(DEFAULT_SETTINGS);
       }
     } catch (error) {
-      console.error('Failed to load settings:', error);
+      console.error('❌ [LOAD] Failed to load settings:', error);
+      // On error, ensure we at least have defaults
+      this.settings.set(DEFAULT_SETTINGS);
     }
   }
 
   async saveSettings(settings: AISettings): Promise<void> {
     try {
-      console.log('Saving settings to chrome.storage:', settings);
+      console.log('🔵 Saving settings to chrome.storage:', settings);
       await chrome.storage.sync.set({ aiSettings: settings });
+
+      // Verify save by reading back
+      const verification = await chrome.storage.sync.get('aiSettings');
+      console.log('🟢 Verification - Read back from storage:', verification);
+
       this.settings.set(settings);
-      console.log('Settings saved successfully');
+      console.log('🟢 Settings saved to signal successfully');
 
       // Notify content script about settings change
       const tabs = await chrome.tabs.query({ url: 'https://www.linkedin.com/*' });
-      console.log('Found LinkedIn tabs:', tabs.length);
+      console.log('📡 Found LinkedIn tabs:', tabs.length);
       for (const tab of tabs) {
         if (tab.id) {
-          console.log('Sending settings update to tab:', tab.id);
+          console.log('📤 Sending settings update to tab:', tab.id);
           chrome.tabs.sendMessage(tab.id, {
             type: 'SETTINGS_UPDATED',
             settings,
@@ -106,7 +120,7 @@ export class SettingsService {
         }
       }
     } catch (error) {
-      console.error('Failed to save settings:', error);
+      console.error('❌ Failed to save settings:', error);
       throw error;
     }
   }
