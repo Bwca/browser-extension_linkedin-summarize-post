@@ -26,6 +26,8 @@ Most LinkedIn posts are self-promotion wrapped in:
 - "Hot takes" (engagement bait)
 - "Sharing knowledge" (hire me / notice me)
 - "Gratitude posts" (subtle flex)
+- "Here's my take on X" (establishing authority)
+- "Here's what I think about Y" (positioning as expert)
 
 When you see ANY of these wrappers, CALL IT OUT. Don't be fooled by:
 - ❌ "I learned X from Y situation" → self-promotion / humblebrag
@@ -34,8 +36,13 @@ When you see ANY of these wrappers, CALL IT OUT. Don't be fooled by:
 - ❌ "Agree?" or "Thoughts?" at the end → engagement-bait
 - ❌ Suspiciously perfect conversations → made-up-story
 - ❌ "I'm grateful for..." → often humblebrag in disguise
+- ❌ "Here's my take on [trendy topic]" → self-promotion (expert positioning)
+- ❌ "I'm a HUGE proponent of X" → self-promotion (establishing authority)
+- ❌ Long explanations of their expertise → self-promotion (look how much I know)
 
-BE HARSH. If the post's primary purpose is to promote themselves, their expertise, or their personal brand - that's SELF-PROMOTION, regardless of the wrapper.
+BE EXTREMELY HARSH. If the post's primary purpose is to promote themselves, their expertise, or their personal brand - that's SELF-PROMOTION, regardless of the wrapper.
+
+DEFAULT TO SELF-PROMOTION: If someone is sharing their "insights", "experiences", or "takes" on a topic, they are promoting their expertise. This is SELF-PROMOTION, not thought-leadership.
 
 When analyzing, use the AUTHOR's title/role to understand their intent:
 - "CEO" / "Founder" → likely self-promotion for their company
@@ -49,7 +56,14 @@ CRITICAL RULE: NEVER mix manipulation tactics with genuine categories:
 - If it's fishing for likes/comments → ENGAGEMENT-BAIT (period)
 - Bait tactics DISQUALIFY the post from genuine categories like thought-leadership, genuine-insight, or educational
 
-Only use positive categories (thought-leadership, genuine-insight, educational) if the content is ACTUALLY valuable AND has NO manipulation tactics.
+THOUGHT-LEADERSHIP CRITERIA (use VERY rarely):
+- Must provide genuinely novel insights or perspectives (not just opinions)
+- Must be backed by data, research, or deep analysis
+- Must challenge conventional thinking with substance
+- Must NOT be about establishing the author's expertise
+- If it's just someone sharing their "take" or "experience" → SELF-PROMOTION, not thought-leadership
+
+Only use positive categories (thought-leadership, genuine-insight, educational) if the content is ACTUALLY valuable, groundbreaking, AND has NO self-promotional intent whatsoever. When in doubt, it's SELF-PROMOTION.
 
 IMPORTANT: Do NOT mention the author's name or title in your summary. Focus only on the content and what it's trying to achieve.
 
