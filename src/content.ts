@@ -9,6 +9,9 @@ console.log(
 // Track which posts already have summarize buttons
 const processedPosts = new WeakSet<Element>();
 
+// AI session
+let aiSession: any = null;
+
 // Wait for the page to be ready
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init);
@@ -16,13 +19,16 @@ if (document.readyState === "loading") {
   init();
 }
 
-function init() {
+async function init() {
   console.log("LinkedIn Summarizer: Initializing...");
   console.log("LinkedIn Summarizer: Current URL:", window.location.href);
   console.log(
     "LinkedIn Summarizer: Document ready state:",
     document.readyState
   );
+
+  // Initialize Chrome AI
+  await initAI();
 
   // Wait a bit for LinkedIn to render
   setTimeout(() => {
@@ -50,6 +56,83 @@ function init() {
     childList: true,
     subtree: true,
   });
+}
+
+async function initAI() {
+  // @ts-ignore - Chrome AI API types
+  if (!("LanguageModel" in self)) {
+    console.warn(
+      "LinkedIn Summarizer: Chrome AI not available. Enable Prompt API in chrome://flags"
+    );
+    return;
+  }
+
+  console.log("LinkedIn Summarizer: Initializing Chrome AI...");
+
+  try {
+    // Destroy existing session if any
+    if (aiSession) {
+      try {
+        aiSession.destroy();
+      } catch (e) {
+        console.log("LinkedIn Summarizer: Session already destroyed");
+      }
+      aiSession = null;
+    }
+
+    // @ts-ignore
+    const { defaultTopK, defaultTemperature } =
+      await self.LanguageModel.params();
+
+    // @ts-ignore
+    aiSession = await self.LanguageModel.create({
+      temperature: defaultTemperature || 0.8,
+      topK: defaultTopK || 3,
+      initialPrompts: [
+        {
+          role: "system",
+          content: `You are an expert at analyzing social media posts. When given a LinkedIn post, you should:
+1. Provide a concise 2-3 sentence summary
+2. Identify the tone/category from these options: humblebrag, ragebait, thought-leadership, genuine-insight, self-promotion, engagement-bait, inspirational, educational, job-posting, or other
+
+Format your response EXACTLY as:
+SUMMARY: [your summary here]
+LABEL: [category]
+
+Be direct and concise.`,
+        },
+      ],
+    });
+
+    console.log("LinkedIn Summarizer: Chrome AI initialized successfully!");
+    logTokenStats();
+  } catch (error) {
+    console.error("LinkedIn Summarizer: AI initialization error:", error);
+    aiSession = null;
+  }
+}
+
+function logTokenStats() {
+  if (!aiSession) return;
+
+  // Handle both old and new API shapes
+  const maxTokens = aiSession.inputQuota || aiSession.maxTokens;
+  const tokensUsed = aiSession.inputUsage || aiSession.tokensSoFar;
+  const tokensLeft =
+    aiSession.tokensSoFar !== undefined
+      ? aiSession.tokensSoFar
+      : aiSession.inputQuota - aiSession.inputUsage;
+
+  console.log(
+    `LinkedIn Summarizer: Token stats - Used: ${tokensUsed}, Left: ${tokensLeft}, Max: ${maxTokens}`
+  );
+
+  // If running low on tokens (less than 20%), warn
+  if (maxTokens && tokensLeft < maxTokens * 0.2) {
+    console.warn(
+      "LinkedIn Summarizer: Running low on tokens, will reinitialize on next error"
+    );
+  }
 }
 
 function addSummarizeButtons() {
@@ -163,7 +246,7 @@ function createSummarizeButton(post: Element): HTMLElement {
   return container;
 }
 
-function handleSummarizeClick(post: Element) {
+async function handleSummarizeClick(post: Element) {
   console.log("LinkedIn Summarizer: Summarize button clicked!");
 
   // Get the post URN for identification
@@ -172,19 +255,94 @@ function handleSummarizeClick(post: Element) {
 
   // Get the post text content
   const postContent = post.querySelector(".update-components-text");
+  let postText = "";
+
   if (postContent) {
-    console.log("Post content:", postContent.textContent?.trim());
+    postText = postContent.textContent?.trim() || "";
   }
 
-  // Show alert as requested
-  alert("SUMMARIZE");
+  // If no content found with primary selector, try alternatives
+  if (!postText) {
+    const altContent = post.querySelector('[class*="commentary"]');
+    if (altContent) {
+      postText = altContent.textContent?.trim() || "";
+    }
+  }
 
-  // TODO: Send message to background script to actually summarize
-  // chrome.runtime.sendMessage({
-  //   type: 'summarizePost',
-  //   postUrn: postUrn,
-  //   content: postContent?.textContent?.trim()
-  // });
+  // Log the post content
+  console.log("=== POST CONTENT START ===");
+  console.log(postText);
+  console.log("=== POST CONTENT END ===");
+  console.log(`Content length: ${postText.length} characters`);
+
+  // Check if AI is available
+  if (!aiSession) {
+    alert(
+      "Chrome AI not available. Please enable Prompt API in chrome://flags"
+    );
+    return;
+  }
+
+  // Check if post has content
+  if (!postText || postText.length < 10) {
+    alert("No post content found to summarize.");
+    return;
+  }
+
+  // Summarize with AI
+  try {
+    console.log("LinkedIn Summarizer: Sending to AI...");
+
+    const prompt = `Analyze this LinkedIn post:\n\n${postText}`;
+    const response = await aiSession.prompt(prompt);
+
+    console.log("=== AI RESPONSE START ===");
+    console.log(response);
+    console.log("=== AI RESPONSE END ===");
+
+    // Log token usage after each prompt
+    logTokenStats();
+
+    // Show the result in an alert (you can change this to a better UI later)
+    alert(response);
+  } catch (error) {
+    console.error("LinkedIn Summarizer: AI error:", error);
+
+    // If we hit token limit or session error, try to reinitialize
+    const errorMessage = error instanceof Error ? error.message : "";
+    if (
+      errorMessage.includes("token") ||
+      errorMessage.includes("session") ||
+      errorMessage.includes("quota")
+    ) {
+      console.log(
+        "LinkedIn Summarizer: Possible token limit reached, reinitializing AI..."
+      );
+      await initAI();
+
+      // Retry the request with new session
+      try {
+        if (aiSession) {
+          const retryPrompt = `Analyze this LinkedIn post:\n\n${postText}`;
+          const retryResponse = await aiSession.prompt(retryPrompt);
+          console.log("=== AI RESPONSE (RETRY) START ===");
+          console.log(retryResponse);
+          console.log("=== AI RESPONSE (RETRY) END ===");
+          logTokenStats();
+          alert(retryResponse);
+          return;
+        }
+      } catch (retryError) {
+        console.error("LinkedIn Summarizer: Retry failed:", retryError);
+      }
+    }
+
+    alert(
+      `Error: ${
+        errorMessage || "Unknown error"
+      }\n\nTry clicking the button again.`
+    );
+  }
 }
 
 // Listen for messages from background script
