@@ -52,6 +52,39 @@ label {
   font-size: 0.9rem;
 }
 
+.prompt-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  resize: vertical;
+  margin-bottom: 0.5rem;
+
+  &:focus {
+    outline: none;
+    border-color: #0a66c2;
+    box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.1);
+  }
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #0a66c2;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 0.5rem;
+
+  &:hover {
+    color: #004182;
+  }
+}
+
 .help-text {
   font-weight: 400;
   color: #666;
@@ -175,6 +208,71 @@ input[type='range'] {
     background: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+  }
+}
+
+.info-message {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  background: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+  text-align: center;
+}
+
+.confirm-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.confirm-content {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  max-width: 90%;
+  width: 350px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+    color: #333;
+  }
+
+  p {
+    margin: 0 0 1.5rem 0;
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
+  }
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 0.75rem;
+
+  .btn {
+    flex: 1;
+  }
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background: #c82333;
+    transform: translateY(-1px);
   }
 }
 

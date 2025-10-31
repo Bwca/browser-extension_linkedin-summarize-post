@@ -53,14 +53,57 @@
       </p>
     </div>
 
+    <div class="form-group">
+      <label for="systemPrompt">
+        System Prompt
+        <span class="help-text">Instructions for the AI</span>
+      </label>
+      <textarea
+        id="systemPrompt"
+        name="systemPrompt"
+        [(ngModel)]="systemPrompt"
+        rows="15"
+        class="prompt-textarea"
+      ></textarea>
+      <button type="button" class="btn-link" (click)="resetPromptToDefault()">
+        Reset prompt to default
+      </button>
+      <p class="description">
+        Customize how the AI analyzes LinkedIn posts. Changes take effect after saving.
+      </p>
+    </div>
+
     <div class="form-actions">
       <button type="submit" class="btn btn-primary" [disabled]="saving()">
         {{ saving() ? 'Saving...' : 'Save Settings' }}
       </button>
-      <button type="button" class="btn btn-secondary" (click)="onReset()" [disabled]="saving()">
+      <button type="button" class="btn btn-secondary" (click)="confirmReset()" [disabled]="saving() || isUsingDefaults">
         Reset to Defaults
       </button>
     </div>
+
+    @if (isUsingDefaults) {
+    <div class="info-message">
+      ℹ️ You are using default settings
+    </div>
+    }
+
+    @if (showResetConfirm()) {
+    <div class="confirm-dialog">
+      <div class="confirm-content">
+        <h3>⚠️ Reset to Defaults?</h3>
+        <p>This will restore all settings (temperature, topK, and system prompt) to their default values. This action cannot be undone.</p>
+        <div class="confirm-actions">
+          <button type="button" class="btn btn-danger" (click)="onReset()" [disabled]="saving()">
+            Yes, Reset Everything
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancelReset()" [disabled]="saving()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+    }
 
     @if (message()) {
     <div class="message" [class.error]="isError()">
