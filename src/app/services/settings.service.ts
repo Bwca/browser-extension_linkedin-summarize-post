@@ -34,6 +34,21 @@ BE EXTREMELY HARSH. If the post's primary purpose is to promote themselves, thei
 
 DEFAULT TO SELF-PROMOTION: If someone is sharing their "insights", "experiences", or "takes" on a topic, they are promoting their expertise. This is SELF-PROMOTION, not thought-leadership.
 
+AI-GENERATED CONTENT DETECTION:
+Watch for signs the post was written by AI (ChatGPT, etc):
+- ❌ Overly polished, robotic tone with no personality
+- ❌ Perfect grammar with no natural typos or informal language
+- ❌ Generic motivational phrases: "Here's the thing...", "Let that sink in", "The bottom line"
+- ❌ Numbered lists with suspiciously balanced points
+- ❌ Overuse of emojis in a systematic way (one per line/section)
+- ❌ Corporate buzzwords strung together unnaturally
+- ❌ Perfectly structured with intro, 3-5 points, and conclusion
+- ❌ Sounds like it was written by a helpful assistant, not a human
+- ❌ "Here are X ways/tips/reasons..." followed by sanitized advice
+- ❌ Zero personal voice, could apply to anyone
+
+If it SCREAMS AI, call it out as the PRIMARY label. Labels like: ai-generated, chatgpt-slop, bot-content, ai-drivel, robo-post.
+
 When analyzing, use the AUTHOR's title/role to understand their intent:
 - "CEO" / "Founder" → likely self-promotion for their company
 - "Thought Leader" / "Coach" → selling their services
@@ -57,21 +72,31 @@ Only use positive categories (thought-leadership, genuine-insight, educational) 
 
 IMPORTANT: Do NOT mention the author's name or title in your summary. Focus only on the content and what it's trying to achieve.
 
-Provide 1-2 labels. If there's a manipulation tactic, that MUST be the primary label.
+SUMMARY RULES:
+- Keep it SHORT: 1 sentence max, 2 if absolutely necessary
+- Be direct and cutting
+- Call out the real intent immediately
 
-Categories: engagement-bait, ragebait, self-promotion, humblebrag, made-up-story, virtue-signaling, cringe, thought-leadership, genuine-insight, educational, inspirational, job-posting, other
+LABEL RULES:
+- Create 1-3 labels that capture the essence of the post
+- Use punchy, descriptive labels (lowercase, hyphenated)
+- Be creative and accurate - invent labels that fit the content
+- If there's a manipulation tactic, make it the first label
 
 Format EXACTLY as:
-SUMMARY: [brutally honest summary that identifies the real purpose - NO author names/titles]
-LABELS: [manipulation-tactic OR real-intent], [secondary if no bait]
+SUMMARY: [one brutally honest sentence - NO author names/titles]
+LABELS: [label-1], [label-2], [label-3]
 
-Examples:
-- "LABELS: engagement-bait" (if it asks for engagement)
-- "LABELS: self-promotion, humblebrag" (if no bait tactics)
-- "LABELS: ragebait" (if designed to provoke)
-- "LABELS: genuine-insight" (ONLY if actually insightful AND no bait)
+Examples to learn the style from:
+- "SUMMARY: Fishing for validation by asking rhetorical questions. LABELS: engagement-bait"
+- "SUMMARY: Positioning themselves as an AI expert with a long-winded take everyone already knows. LABELS: self-promotion, buzzword-salad"
+- "SUMMARY: Sharing a convenient story where they're the hero to flex their leadership skills. LABELS: humblebrag, made-up-story"
+- "SUMMARY: Complaining about work culture to seem relatable while actually bragging about their job. LABELS: humble-flex, virtue-signaling"
+- "SUMMARY: Dropping corporate jargon to sound important without saying anything of substance. LABELS: corpo-speak, empty-calories"
+- "SUMMARY: Generic motivational drivel that was obviously copy-pasted from ChatGPT. LABELS: ai-generated, bot-slop"
+- "SUMMARY: Perfectly structured listicle with zero personality or original thought. LABELS: chatgpt-vibes, self-promotion"
 
-If there's ANY bait tactic, call it out as the primary label. Don't give them credit for "thought-leadership" if they're just fishing for engagement. Be savage.`;
+Be savage. Be concise. Create labels that nail the vibe.`;
 
 const DEFAULT_SETTINGS: AISettings = {
   temperature: 0.8,
