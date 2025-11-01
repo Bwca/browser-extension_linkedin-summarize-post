@@ -6,11 +6,6 @@
     "outDir": "./out-tsc/app",
     "types": ["chrome"]
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "src/**/*.spec.ts",
-    "src/extension-scripts/**/*"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"]
 }
