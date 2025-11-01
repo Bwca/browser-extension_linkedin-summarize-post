@@ -46,7 +46,7 @@ AI DETECTION:
 
 OUTPUT FORMAT:
 SUMMARY: [one brutal sentence - NO names/titles]
-LABELS: [label-1], [label-2], [label-3]
+LABELS: [label-1], [label-2]  (maximum 2 labels)
 
 LABEL RULES:
 - Create UNIQUE labels for each post (don't reuse)
@@ -79,11 +79,11 @@ function getLabelColor(label: string): string {
     hash = label.charCodeAt(i) + ((hash << 5) - hash);
   }
 
-  // Generate vibrant colors with good contrast for white text
-  // Using darker backgrounds (low lightness) ensures white text is readable
+  // Generate vibrant colors with high contrast for white text
+  // Using very dark backgrounds ensures excellent readability of white text
   const hue = Math.abs(hash % 360);
-  const saturation = 60 + (Math.abs(hash) % 30); // 60-90% - vibrant colors
-  const lightness = 35 + (Math.abs(hash >> 8) % 20); // 35-55% - dark enough for white text
+  const saturation = 65 + (Math.abs(hash) % 25); // 65-90% - vibrant colors with good saturation
+  const lightness = 25 + (Math.abs(hash >> 8) % 15); // 25-40% - much darker for better contrast
 
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
@@ -573,11 +573,12 @@ function displaySummaryToast(aiResponse: string) {
   const summary = summaryMatch ? summaryMatch[1].trim() : aiResponse;
   const labelsText = labelsMatch ? labelsMatch[1].trim().toLowerCase() : 'other';
 
-  // Split multiple labels by comma
+  // Split multiple labels by comma and limit to 2
   const labels = labelsText
     .split(/[,;/]+/)
     .map((l) => l.trim())
-    .filter((l) => l);
+    .filter((l) => l)
+    .slice(0, 2); // Limit to 2 labels for AI
 
   // Create toast element
   const toast = document.createElement('div');
