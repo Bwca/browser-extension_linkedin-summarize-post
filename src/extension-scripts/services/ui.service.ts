@@ -1,4 +1,4 @@
-// UI Service for LinkedIn Post Summarizer
+// UI Service for FeedBurner
 // Handles toast styling, creation, management, and label colors
 
 class UIService {

@@ -1,7 +1,7 @@
 {
-  "name": "linkedin-summarize-post",
+  "name": "feedburner",
   "version": "1.0.0",
-  "description": "Browser extension to summarize and analyze LinkedIn posts using Chrome AI",
+  "description": "Browser extension to burn through your feed with AI-powered summaries",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

@@ -1,4 +1,4 @@
-// AI Service for LinkedIn Post Summarizer
+// AI Service for FeedBurner
 // Handles AI session initialization, token management, and AI interactions
 
 interface AISettings {
@@ -83,13 +83,11 @@ class AIService {
   public async initAI(): Promise<void> {
     // @ts-ignore - Chrome AI API types
     if (!('LanguageModel' in self)) {
-      console.warn(
-        'LinkedIn Summarizer: Chrome AI not available. Enable Prompt API in chrome://flags'
-      );
+      console.warn('FeedBurner: Chrome AI not available. Enable Prompt API in chrome://flags');
       return;
     }
 
-    console.log('LinkedIn Summarizer: Initializing Chrome AI...');
+    console.log('FeedBurner: Initializing Chrome AI...');
 
     try {
       // Destroy existing session if any
@@ -97,7 +95,7 @@ class AIService {
         try {
           this.aiSession.destroy();
         } catch (e) {
-          console.log('LinkedIn Summarizer: Session already destroyed');
+          console.log('FeedBurner: Session already destroyed');
         }
         this.aiSession = null;
       }
@@ -115,11 +113,11 @@ class AIService {
       });
 
       console.log(
-        `LinkedIn Summarizer: Chrome AI initialized successfully! (temp: ${this.settings.temperature}, topK: ${this.settings.topK})`
+        `FeedBurner: Chrome AI initialized successfully! (temp: ${this.settings.temperature}, topK: ${this.settings.topK})`
       );
       this.logTokenStats();
     } catch (error) {
-      console.error('LinkedIn Summarizer: AI initialization error:', error);
+      console.error('FeedBurner: AI initialization error:', error);
       this.aiSession = null;
     }
   }
@@ -136,12 +134,12 @@ class AIService {
         : this.aiSession.inputQuota - this.aiSession.inputUsage;
 
     console.log(
-      `LinkedIn Summarizer: Token stats - Used: ${tokensUsed}, Left: ${tokensLeft}, Max: ${maxTokens}`
+      `FeedBurner: Token stats - Used: ${tokensUsed}, Left: ${tokensLeft}, Max: ${maxTokens}`
     );
 
     // If running low on tokens (less than 20%), warn
     if (maxTokens && tokensLeft < maxTokens * 0.2) {
-      console.warn('LinkedIn Summarizer: Running low on tokens, will reinitialize on next error');
+      console.warn('FeedBurner: Running low on tokens, will reinitialize on next error');
     }
   }
 
@@ -154,7 +152,7 @@ class AIService {
       throw new Error('Chrome AI not available. Please enable Prompt API in chrome://flags');
     }
 
-    console.log('LinkedIn Summarizer: Sending to AI...');
+    console.log('FeedBurner: Sending to AI...');
 
     // Build context-aware prompt
     let prompt = 'Analyze this LinkedIn post:\n\n';

@@ -1,4 +1,4 @@
-// Summarize handler for LinkedIn Post Summarizer
+// Summarize handler for FeedBurner
 // Handles the click event for summarize buttons
 
 import { aiService } from './services/ai.service';
@@ -6,7 +6,7 @@ import { uiService } from './services/ui.service';
 import { domService } from './services/dom.service';
 
 export async function handleSummarizeClick(post: Element) {
-  console.log('LinkedIn Summarizer: Summarize button clicked!');
+  console.log('FeedBurner: Summarize button clicked!');
 
   // Extract post data using the DOM service
   const { authorName, authorTitle, postText, postUrn } = domService.extractPostData(post);
@@ -40,7 +40,7 @@ export async function handleSummarizeClick(post: Element) {
     // Parse and display the response in a toast
     uiService.displaySummaryToast(response);
   } catch (error) {
-    console.error('LinkedIn Summarizer: AI error:', error);
+    console.error('FeedBurner: AI error:', error);
 
     // If we hit token limit or session error, try to reinitialize
     const errorMessage = error instanceof Error ? error.message : '';
@@ -49,7 +49,7 @@ export async function handleSummarizeClick(post: Element) {
       errorMessage.includes('session') ||
       errorMessage.includes('quota')
     ) {
-      console.log('LinkedIn Summarizer: Possible token limit reached, reinitializing AI...');
+      console.log('FeedBurner: Possible token limit reached, reinitializing AI...');
       await aiService.initAI();
 
       // Retry the request with new session
@@ -58,7 +58,7 @@ export async function handleSummarizeClick(post: Element) {
         uiService.displaySummaryToast(retryResponse);
         return;
       } catch (retryError) {
-        console.error('LinkedIn Summarizer: Retry failed:', retryError);
+        console.error('FeedBurner: Retry failed:', retryError);
       }
     }
 

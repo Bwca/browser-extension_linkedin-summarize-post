@@ -1,6 +1,6 @@
-# LinkedIn Post Summarizer Extension
+# FeedBurner
 
-A Chrome extension that uses Chrome's built-in AI (Gemini Nano) to analyze LinkedIn posts and cut through the BS. Get brutally honest summaries and labels that identify the real intent behind every post.
+A Chrome extension that uses Chrome's built-in AI (Gemini Nano) to burn through your feed with brutally honest summaries. Cut through the BS and see the real intent behind every post with AI-powered analysis.
 
 ## ✨ Features
 

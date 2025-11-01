@@ -1,17 +1,17 @@
-// Content script for LinkedIn Post Summarizer
-// Runs on LinkedIn pages and adds UI elements for summarization
+// Content script for FeedBurner
+// Runs on supported pages and adds UI elements for summarization
 
 import { aiService } from './services/ai.service';
 import { uiService } from './services/ui.service';
 import { domService } from './services/dom.service';
 import { handleSummarizeClick } from './summarize.handler';
 
-console.log('LinkedIn Summarizer Extension: Content script loaded on', window.location.href);
+console.log('FeedBurner Extension: Content script loaded on', window.location.href);
 
 // Listen for settings updates
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'SETTINGS_UPDATED') {
-    console.log('LinkedIn Summarizer: Settings updated!', message.settings);
+    console.log('FeedBurner: Settings updated!', message.settings);
     aiService.updateSettings(message.settings);
   }
 });
@@ -24,19 +24,19 @@ if (document.readyState === 'loading') {
 }
 
 async function init() {
-  console.log('LinkedIn Summarizer: Initializing...');
-  console.log('LinkedIn Summarizer: Current URL:', window.location.href);
-  console.log('LinkedIn Summarizer: Document ready state:', document.readyState);
+  console.log('FeedBurner: Initializing...');
+  console.log('FeedBurner: Current URL:', window.location.href);
+  console.log('FeedBurner: Document ready state:', document.readyState);
 
   // Load settings from storage
   try {
     const result = await chrome.storage.sync.get('aiSettings');
     if (result['aiSettings']) {
       aiService.updateSettings(result['aiSettings']);
-      console.log('LinkedIn Summarizer: Loaded settings from storage');
+      console.log('FeedBurner: Loaded settings from storage');
     }
   } catch (error) {
-    console.error('LinkedIn Summarizer: Failed to load settings', error);
+    console.error('FeedBurner: Failed to load settings', error);
   }
 
   // Inject toast styles
@@ -45,9 +45,9 @@ async function init() {
   // Initialize Chrome AI
   await aiService.initAI();
 
-  // Wait a bit for LinkedIn to render
+  // Wait a bit for the page to render
   setTimeout(() => {
-    console.log('LinkedIn Summarizer: Running initial scan...');
+    console.log('FeedBurner: Running initial scan...');
     domService.addSummarizeButtons(handleSummarizeClick);
   }, 2000);
 

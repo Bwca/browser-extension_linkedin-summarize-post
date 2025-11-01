@@ -1,11 +1,11 @@
-// DOM Service for LinkedIn Post Summarizer
-// Handles button creation and LinkedIn DOM manipulation
+// DOM Service for FeedBurner
+// Handles button creation and DOM manipulation
 
 class DOMService {
   private processedPosts = new WeakSet<Element>();
 
   public addSummarizeButtons(onSummarizeClick: (post: Element) => void): void {
-    // Try multiple selectors for LinkedIn posts
+    // Try multiple selectors for posts
     let posts = document.querySelectorAll('.feed-shared-update-v2[data-urn]');
 
     // If no posts found, try alternative selectors
@@ -17,7 +17,7 @@ class DOMService {
       posts = document.querySelectorAll('.feed-shared-update-v2');
     }
 
-    console.log(`LinkedIn Summarizer: Found ${posts.length} posts`);
+    console.log(`FeedBurner: Found ${posts.length} posts`);
 
     let addedCount = 0;
 
@@ -57,17 +57,17 @@ class DOMService {
     });
 
     if (addedCount > 0) {
-      console.log(`LinkedIn Summarizer: Added ${addedCount} new summarize buttons`);
+      console.log(`FeedBurner: Added ${addedCount} new summarize buttons`);
     }
   }
 
   public createSummarizeButton(post: Element, onClick: (post: Element) => void): HTMLElement {
-    // Create button container to match LinkedIn's structure
+    // Create button container to match the platform's structure
     const container = document.createElement('div');
     container.className =
       'feed-shared-social-action-bar__action-button feed-shared-social-action-bar--new-padding linkedin-summarizer-button';
 
-    // Create the button with LinkedIn's styling
+    // Create the button with platform styling
     const button = document.createElement('button');
     button.className =
       'artdeco-button artdeco-button--muted artdeco-button--3 artdeco-button--tertiary social-actions-button flex-wrap';

@@ -1,17 +1,17 @@
-// Background service worker for LinkedIn Post Summarizer
+// Background service worker for FeedBurner
 // Handles extension background tasks and message passing
 
-console.log("LinkedIn Summarizer Extension: Background script loaded");
+console.log('FeedBurner Extension: Background script loaded');
 
 // Listen for messages from content scripts
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log("Background received message:", request);
+  console.log('Background received message:', request);
 
   // Handle different message types here
-  if (request.type === "summarizePost") {
+  if (request.type === 'summarizePost') {
     // TODO: Implement post summarization logic
-    console.log("Summarize post request received");
-    sendResponse({ success: true, message: "Feature not yet implemented" });
+    console.log('Summarize post request received');
+    sendResponse({ success: true, message: 'Feature not yet implemented' });
   }
 
   return true; // Keep the message channel open for async responses
@@ -19,12 +19,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // Extension installation/update handler
 chrome.runtime.onInstalled.addListener((details) => {
-  console.log("Extension installed/updated:", details.reason);
+  console.log('Extension installed/updated:', details.reason);
 
-  if (details.reason === "install") {
-    console.log("First time installation");
-  } else if (details.reason === "update") {
-    console.log("Extension updated");
+  if (details.reason === 'install') {
+    console.log('First time installation');
+  } else if (details.reason === 'update') {
+    console.log('Extension updated');
   }
 });
-

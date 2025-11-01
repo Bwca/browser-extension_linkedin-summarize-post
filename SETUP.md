@@ -1,4 +1,4 @@
-# Setup Guide - LinkedIn Post Summarizer Extension
+# Setup Guide - FeedBurner Extension
 
 Complete setup instructions for developers and users.
 
@@ -53,7 +53,7 @@ dist/linkedin-summarize-post/
 3. Enable **"Developer mode"** (top right toggle)
 4. Click **"Load unpacked"**
 5. Select `dist/linkedin-summarize-post` folder
-6. Extension should appear with name "LinkedIn Post Summarizer"
+6. Extension should appear with name "FeedBurner"
 
 ### Step 4: Enable Chrome AI (Critical!)
 
@@ -78,7 +78,7 @@ dist/linkedin-summarize-post/
 ### 1. Check Extension Loaded
 
 - Go to `chrome://extensions/`
-- Verify "LinkedIn Post Summarizer" is enabled
+- Verify "FeedBurner" is enabled
 - No errors shown
 
 ### 2. Test on LinkedIn
