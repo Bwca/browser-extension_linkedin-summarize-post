@@ -355,7 +355,21 @@ input[type='range'] {
 
   &.active {
     border-color: #0a66c2;
-    background: #f0f8ff;
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+    box-shadow: 0 4px 12px rgba(10, 102, 194, 0.15);
+    transform: translateY(-2px);
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #0a66c2, #0077b5);
+      border-radius: 8px 8px 0 0;
+    }
   }
 }
 
@@ -374,12 +388,15 @@ input[type='range'] {
 }
 
 .active-badge {
-  background: #0a66c2;
+  background: linear-gradient(135deg, #0a66c2, #0077b5);
   color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
+  padding: 0.3rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(10, 102, 194, 0.2);
+  position: relative;
+  z-index: 1;
 }
 
 .profile-meta {

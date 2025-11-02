@@ -19,7 +19,7 @@
     </div>
 
     <div class="profiles-list">
-      @for (profile of profiles(); track profile.id) {
+      @for (profile of sortedProfiles(); track profile.id) {
       <div class="profile-card" [class.active]="isProfileActive(profile)">
         <div class="profile-header">
           <h3>{{ profile.name }}</h3>

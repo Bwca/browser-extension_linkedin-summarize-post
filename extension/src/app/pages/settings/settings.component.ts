@@ -71,6 +71,17 @@ export class SettingsComponent implements OnInit {
 
   activeProfileIdValue = computed(() => this.activeProfileId());
 
+  // Sort profiles with active profile first
+  sortedProfiles = computed(() => {
+    const profiles = this.profiles();
+    const activeId = this.activeProfileIdValue();
+    return [...profiles].sort((a, b) => {
+      if (a.id === activeId) return -1;
+      if (b.id === activeId) return 1;
+      return 0;
+    });
+  });
+
   currentEditingProfile = computed(() => (this.showEditProfile() ? this.editingProfile : null));
 
   isUsingDefaults = computed(() => {
