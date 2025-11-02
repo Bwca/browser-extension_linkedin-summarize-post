@@ -1,0 +1,17 @@
+FeedBurner: AI-Powered LinkedIn Post Analyzer
+
+Tired of endless scrolling through LinkedIn's feed of self-promotion, engagement bait, and performative content? FeedBurner uses advanced AI to cut through the noise with brutally honest post analysis.
+
+🔥 Key Features:
+- Ruthless Analysis: Detects humblebrags, fake stories, AI-generated slop, and executive posturing
+- Unique Labels: Creates custom, savage labels for each post type (no duplicates!)
+- Instant Summaries: Click "Summarize" on any post for an AI-powered breakdown
+- Customizable AI: Fine-tune temperature, topK, and system prompts for your preferred analysis style
+- Smart Integration: Seamlessly adds buttons to LinkedIn posts as you scroll
+
+Why You'll Love It:
+FeedBurner doesn't just summarize - it exposes the real intent behind every post. Whether it's a CEO's "vulnerability theater" or a consultant's buzzword salad, get the unfiltered truth about what you're actually reading.
+
+Privacy First: Runs entirely in your browser using Chrome's built-in AI. No data sent to external servers.
+
+Perfect for professionals who want to reclaim their time and cut through LinkedIn's curated facade.
