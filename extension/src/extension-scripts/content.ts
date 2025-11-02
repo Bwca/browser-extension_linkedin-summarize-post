@@ -6,6 +6,19 @@ import { uiService } from './services/ui.service';
 import { domService } from './services/dom.service';
 import { handleSummarizeClick } from './summarize.handler';
 
+// Types for settings profiles (mirroring the main app)
+interface AISettings {
+  temperature: number;
+  topK: number;
+  systemPrompt: string;
+}
+
+interface SettingsProfile {
+  id: string;
+  name: string;
+  settings: AISettings;
+}
+
 console.log('FeedBurner Extension: Content script loaded on', window.location.href);
 
 // Listen for settings updates
@@ -30,10 +43,14 @@ async function init() {
 
   // Load settings from storage
   try {
-    const result = await chrome.storage.sync.get('aiSettings');
-    if (result['aiSettings']) {
-      aiService.updateSettings(result['aiSettings']);
-      console.log('FeedBurner: Loaded settings from storage');
+    const result = await chrome.storage.sync.get('settingsProfiles');
+    if (result['settingsProfiles']) {
+      const { profiles, activeProfileId } = result['settingsProfiles'];
+      const activeProfile = profiles.find((p: SettingsProfile) => p.id === activeProfileId);
+      if (activeProfile) {
+        aiService.updateSettings(activeProfile.settings);
+        console.log('FeedBurner: Loaded active profile settings from storage');
+      }
     }
   } catch (error) {
     console.error('FeedBurner: Failed to load settings', error);
