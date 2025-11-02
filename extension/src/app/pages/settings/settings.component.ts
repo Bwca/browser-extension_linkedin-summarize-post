@@ -153,11 +153,6 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  resetPromptToDefault() {
-    const defaultPrompt = this.settingsService.getDefaultPrompt();
-    this.settingsForm.patchValue({ systemPrompt: defaultPrompt });
-  }
-
   // Profile management methods
   async switchToProfile(profileId: string) {
     try {
@@ -308,9 +303,13 @@ export class SettingsComponent implements OnInit {
       this.showDeleteConfirm.set({ profile: null });
 
       setTimeout(() => this.message.set(''), 3000);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to delete profile:', error);
-      this.message.set('Failed to delete profile. Please try again.');
+      const errorMessage =
+        error.message === 'Cannot delete the default profile'
+          ? 'Cannot delete the default profile.'
+          : 'Failed to delete profile. Please try again.';
+      this.message.set(errorMessage);
       this.isError.set(true);
     } finally {
       this.saving.set(false);

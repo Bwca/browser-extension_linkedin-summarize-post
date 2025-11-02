@@ -213,6 +213,11 @@ export class SettingsService {
   }
 
   async deleteProfile(profileId: string): Promise<void> {
+    // Prevent deletion of the default profile
+    if (profileId === 'default') {
+      throw new Error('Cannot delete the default profile');
+    }
+
     const currentProfiles = this.profiles();
     const filteredProfiles = currentProfiles.filter((p) => p.id !== profileId);
 

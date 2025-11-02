@@ -57,7 +57,7 @@
           <button type="button" class="btn-profile btn-outline" (click)="duplicateProfile(profile)">
             📋 Duplicate
           </button>
-          @if (profiles().length > 1) {
+          @if (profiles().length > 1 && profile.id !== 'default') {
           <button
             type="button"
             class="btn-profile btn-danger"
@@ -130,9 +130,6 @@
           rows="12"
           class="prompt-textarea"
         ></textarea>
-        <button type="button" class="btn-link" (click)="resetPromptToDefault()">
-          Reset prompt to default
-        </button>
         <p class="description">
           Customize how the AI analyzes LinkedIn posts. Changes take effect after saving.
         </p>
@@ -263,9 +260,6 @@
             at least 10 characters }
           </div>
           }
-          <button type="button" class="btn-link" (click)="resetPromptToDefault()">
-            Reset to default prompt
-          </button>
         </div>
 
         <div class="modal-actions">
@@ -368,9 +362,6 @@
             at least 10 characters }
           </div>
           }
-          <button type="button" class="btn-link" (click)="resetPromptToDefault()">
-            Reset to default prompt
-          </button>
         </div>
 
         <div class="modal-actions">
