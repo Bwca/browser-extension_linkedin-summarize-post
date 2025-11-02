@@ -152,7 +152,11 @@ class DOMService {
       }
     }
 
-    return { authorName, authorTitle, postText, postUrn: postUrn || undefined };
+    const result: { authorName: string; authorTitle: string; postText: string; postUrn?: string } = { authorName, authorTitle, postText };
+    if (postUrn) {
+      result.postUrn = postUrn;
+    }
+    return result;
   }
 }
 

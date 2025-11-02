@@ -9,7 +9,7 @@ import { handleSummarizeClick } from './summarize.handler';
 console.log('FeedBurner Extension: Content script loaded on', window.location.href);
 
 // Listen for settings updates
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, _sender, _sendResponse) => {
   if (message.type === 'SETTINGS_UPDATED') {
     console.log('FeedBurner: Settings updated!', message.settings);
     aiService.updateSettings(message.settings);
@@ -48,7 +48,7 @@ async function init() {
   // Observe DOM changes to detect new posts as they load
   // Use debouncing to prevent infinite loops
   let timeoutId: number | null = null;
-  const observer = new MutationObserver((mutations) => {
+  const observer = new MutationObserver((_mutations) => {
     // Clear existing timeout
     if (timeoutId) {
       clearTimeout(timeoutId);
@@ -68,7 +68,7 @@ async function init() {
 }
 
 // Listen for messages from background script
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   console.log('Content script received message:', request);
 
   if (request.type === 'ping') {

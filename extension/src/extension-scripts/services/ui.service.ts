@@ -145,8 +145,8 @@ class UIService {
     const summaryMatch = aiResponse.match(/SUMMARY:\s*(.+?)(?=LABELS?:|$)/s);
     const labelsMatch = aiResponse.match(/LABELS?:\s*(.+?)$/s);
 
-    const summary = summaryMatch ? summaryMatch[1].trim() : aiResponse;
-    const labelsText = labelsMatch ? labelsMatch[1].trim().toLowerCase() : 'other';
+    const summary = summaryMatch && summaryMatch[1] ? summaryMatch[1].trim() : aiResponse;
+    const labelsText = labelsMatch && labelsMatch[1] ? labelsMatch[1].trim().toLowerCase() : 'other';
 
     // Split multiple labels by comma and limit to 2
     const labels = labelsText

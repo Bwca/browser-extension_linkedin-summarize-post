@@ -4,7 +4,7 @@
 console.log('FeedBurner Extension: Background script loaded');
 
 // Listen for messages from content scripts
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   console.log('Background received message:', request);
 
   // Handle different message types here

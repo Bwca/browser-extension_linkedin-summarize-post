@@ -194,9 +194,12 @@ export class SettingsService {
       throw new Error(`Profile with id ${profileId} not found`);
     }
 
+    const currentProfile = currentProfiles[profileIndex]!;
     const updatedProfile: SettingsProfile = {
-      ...currentProfiles[profileIndex],
-      ...updates,
+      id: currentProfile.id,
+      name: updates.name ?? currentProfile.name,
+      settings: updates.settings ?? currentProfile.settings,
+      createdAt: currentProfile.createdAt,
       updatedAt: new Date(),
     };
 
@@ -232,7 +235,7 @@ export class SettingsService {
     // If we deleted the active profile, switch to the first remaining profile or create default
     if (profileId === this.activeProfileId()) {
       if (filteredProfiles.length > 0) {
-        newActiveId = filteredProfiles[0].id;
+        newActiveId = filteredProfiles[0]!.id;
       } else {
         // If no profiles left, create default
         await this.createDefaultProfile();
