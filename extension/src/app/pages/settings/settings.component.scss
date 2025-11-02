@@ -598,6 +598,14 @@ input[type='range'] {
   margin: 0;
 }
 
+// Form validation errors
+.error-message {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
 // Warning text
 .warning-text {
   color: #856404;

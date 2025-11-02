@@ -1,22 +1,21 @@
-import { Component, signal, OnInit, effect, Signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, signal, OnInit, effect, inject } from '@angular/core';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { SettingsService, SettingsProfile, AISettings } from '../../services/settings.service';
 import { DatePipe } from '@angular/common';
+import { SettingsFormData } from './models/settings-form-data.interface';
+import { ProfileFormData } from './models/profile-form-data.interface';
 
 @Component({
   selector: 'app-settings',
-  imports: [FormsModule, RouterLink, DatePipe],
+  imports: [ReactiveFormsModule, RouterLink, DatePipe],
   providers: [SettingsService],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
 })
 export class SettingsComponent implements OnInit {
-  // Current profile being edited
-  temperature = 0.8;
-  topK = 3;
-  systemPrompt = '';
-  profileName = '';
+  // Modern dependency injection using inject()
+  private settingsService = inject(SettingsService);
 
   // UI State
   saving = signal(false);
@@ -25,33 +24,65 @@ export class SettingsComponent implements OnInit {
   loading = signal(true);
 
   // Profile management
-  profiles!: Signal<SettingsProfile[]>; // Will be initialized in constructor
-  activeProfileId!: Signal<string>; // Will be initialized in constructor
+  profiles = this.settingsService.profiles;
+  activeProfileId = this.settingsService.activeProfileId;
   editingProfile: SettingsProfile | null = null;
   showAddProfile = signal(false);
   showEditProfile = signal(false);
   showDeleteConfirm = signal<{ profile: SettingsProfile | null }>({ profile: null });
   previewProfile: SettingsProfile | null = null;
 
-  constructor(private settingsService: SettingsService) {
-    console.log('🔷 SettingsComponent constructor');
+  // Strongly typed reactive forms using constructors
+  settingsForm = new FormGroup<SettingsFormData>({
+    temperature: new FormControl(0.8, {
+      validators: [Validators.required, Validators.min(0), Validators.max(1)],
+      nonNullable: true,
+    }),
+    topK: new FormControl(3, {
+      validators: [Validators.required, Validators.min(1), Validators.max(10)],
+      nonNullable: true,
+    }),
+    systemPrompt: new FormControl('', {
+      validators: [Validators.required, Validators.minLength(10)],
+      nonNullable: true,
+    }),
+  });
 
-    // Initialize signals after settingsService is available
-    this.profiles = this.settingsService.profiles;
-    this.activeProfileId = this.settingsService.activeProfileId;
+  profileForm = new FormGroup<ProfileFormData>({
+    name: new FormControl('', {
+      validators: [Validators.required, Validators.minLength(1), Validators.maxLength(50)],
+      nonNullable: true,
+    }),
+    temperature: new FormControl(0.8, {
+      validators: [Validators.required, Validators.min(0), Validators.max(1)],
+      nonNullable: true,
+    }),
+    topK: new FormControl(3, {
+      validators: [Validators.required, Validators.min(1), Validators.max(10)],
+      nonNullable: true,
+    }),
+    systemPrompt: new FormControl('', {
+      validators: [Validators.required, Validators.minLength(10)],
+      nonNullable: true,
+    }),
+  });
+
+  constructor() {
+    console.log('🔷 SettingsComponent constructor');
 
     // React to settings changes using Angular effect
     effect(() => {
       const currentSettings = this.settingsService.settings();
       console.log('🔄 Effect triggered - settings changed:', currentSettings);
-      this.temperature = currentSettings.temperature;
-      this.topK = currentSettings.topK;
-      this.systemPrompt = currentSettings.systemPrompt;
-      console.log('🔄 Component values updated:', {
-        temperature: this.temperature,
-        topK: this.topK,
-        promptLength: this.systemPrompt.length,
+
+      // Update the form with current settings
+      this.settingsForm.patchValue({
+        temperature: currentSettings.temperature,
+        topK: currentSettings.topK,
+        systemPrompt: currentSettings.systemPrompt,
       });
+
+      console.log('🔄 Settings form updated with current values');
     });
   }
 
@@ -76,31 +107,31 @@ export class SettingsComponent implements OnInit {
 
   get isUsingDefaults(): boolean {
     const defaults = this.settingsService.getDefaultSettings();
+    const formValue = this.settingsForm.getRawValue();
     return (
-      this.temperature === defaults.temperature &&
-      this.topK === defaults.topK &&
-      this.systemPrompt === defaults.systemPrompt
+      formValue.temperature === defaults.temperature &&
+      formValue.topK === defaults.topK &&
+      formValue.systemPrompt === defaults.systemPrompt
     );
   }
 
-  onTemperatureChange() {
-    this.temperature = Math.round(this.temperature * 10) / 10;
-  }
-
-  onTopKChange() {
-    this.topK = Math.round(this.topK);
-  }
-
   async onSave() {
+    if (this.settingsForm.invalid) {
+      this.message.set('Please fix the form errors before saving.');
+      this.isError.set(true);
+      return;
+    }
+
     this.saving.set(true);
     this.message.set('');
     this.isError.set(false);
 
     try {
+      const formValue = this.settingsForm.getRawValue();
       await this.settingsService.saveSettings({
-        temperature: this.temperature,
-        topK: this.topK,
-        systemPrompt: this.systemPrompt,
+        temperature: formValue.temperature,
+        topK: formValue.topK,
+        systemPrompt: formValue.systemPrompt,
       });
       this.message.set('✓ Settings saved and AI reinitialized!');
 
@@ -117,7 +148,8 @@ export class SettingsComponent implements OnInit {
   }
 
   resetPromptToDefault() {
-    this.systemPrompt = this.settingsService.getDefaultPrompt();
+    const defaultPrompt = this.settingsService.getDefaultPrompt();
+    this.settingsForm.patchValue({ systemPrompt: defaultPrompt });
   }
 
   // Profile management methods
@@ -144,21 +176,23 @@ export class SettingsComponent implements OnInit {
   }
 
   startAddProfile() {
-    this.profileName = '';
-    this.temperature = 0.8;
-    this.topK = 3;
-    this.systemPrompt = this.settingsService.getDefaultPrompt();
+    this.profileForm.reset({
+      name: '',
+      temperature: 0.8,
+      topK: 3,
+      systemPrompt: this.settingsService.getDefaultPrompt(),
+    });
     this.showAddProfile.set(true);
   }
 
   cancelAddProfile() {
     this.showAddProfile.set(false);
-    this.profileName = '';
+    this.profileForm.reset();
   }
 
   async saveNewProfile() {
-    if (!this.profileName.trim()) {
-      this.message.set('Profile name is required.');
+    if (this.profileForm.invalid) {
+      this.message.set('Please fix the form errors before creating the profile.');
       this.isError.set(true);
       return;
     }
@@ -168,16 +202,17 @@ export class SettingsComponent implements OnInit {
     this.isError.set(false);
 
     try {
+      const formValue = this.profileForm.getRawValue();
       const newSettings: AISettings = {
-        temperature: this.temperature,
-        topK: this.topK,
-        systemPrompt: this.systemPrompt,
+        temperature: formValue.temperature,
+        topK: formValue.topK,
+        systemPrompt: formValue.systemPrompt,
       };
 
-      await this.settingsService.createProfile(this.profileName.trim(), newSettings);
+      await this.settingsService.createProfile(formValue.name.trim(), newSettings);
       this.message.set('✓ Profile created successfully!');
       this.showAddProfile.set(false);
-      this.profileName = '';
+      this.profileForm.reset();
 
       setTimeout(() => this.message.set(''), 3000);
     } catch (error) {
@@ -191,22 +226,24 @@ export class SettingsComponent implements OnInit {
 
   startEditProfile(profile: SettingsProfile) {
     this.editingProfile = profile;
-    this.profileName = profile.name;
-    this.temperature = profile.settings.temperature;
-    this.topK = profile.settings.topK;
-    this.systemPrompt = profile.settings.systemPrompt;
+    this.profileForm.patchValue({
+      name: profile.name,
+      temperature: profile.settings.temperature,
+      topK: profile.settings.topK,
+      systemPrompt: profile.settings.systemPrompt,
+    });
     this.showEditProfile.set(true);
   }
 
   cancelEditProfile() {
     this.showEditProfile.set(false);
     this.editingProfile = null;
-    this.profileName = '';
+    this.profileForm.reset();
   }
 
   async saveEditedProfile() {
-    if (!this.editingProfile || !this.profileName.trim()) {
-      this.message.set('Profile name is required.');
+    if (!this.editingProfile || this.profileForm.invalid) {
+      this.message.set('Please fix the form errors before updating the profile.');
       this.isError.set(true);
       return;
     }
@@ -216,21 +253,22 @@ export class SettingsComponent implements OnInit {
     this.isError.set(false);
 
     try {
+      const formValue = this.profileForm.getRawValue();
       const updatedSettings: AISettings = {
-        temperature: this.temperature,
-        topK: this.topK,
-        systemPrompt: this.systemPrompt,
+        temperature: formValue.temperature,
+        topK: formValue.topK,
+        systemPrompt: formValue.systemPrompt,
       };
 
-      await this.settingsService.updateProfile(this.editingProfile.id, {
-        name: this.profileName.trim(),
+      await this.settingsService.updateProfile(this.editingProfile!.id, {
+        name: formValue.name.trim(),
         settings: updatedSettings,
       });
 
       this.message.set('✓ Profile updated successfully!');
       this.showEditProfile.set(false);
       this.editingProfile = null;
-      this.profileName = '';
+      this.profileForm.reset();
 
       setTimeout(() => this.message.set(''), 3000);
     } catch (error) {
@@ -278,10 +316,12 @@ export class SettingsComponent implements OnInit {
   }
 
   duplicateProfile(profile: SettingsProfile) {
-    this.profileName = `${profile.name} (Copy)`;
-    this.temperature = profile.settings.temperature;
-    this.topK = profile.settings.topK;
-    this.systemPrompt = profile.settings.systemPrompt;
+    this.profileForm.patchValue({
+      name: `${profile.name} (Copy)`,
+      temperature: profile.settings.temperature,
+      topK: profile.settings.topK,
+      systemPrompt: profile.settings.systemPrompt,
+    });
     this.showAddProfile.set(true);
   }
 }
