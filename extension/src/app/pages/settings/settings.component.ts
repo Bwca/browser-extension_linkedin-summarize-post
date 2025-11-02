@@ -1,14 +1,13 @@
-import { Component, signal, OnInit, effect, inject } from '@angular/core';
+import { Component, signal, OnInit, effect, inject, computed } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { SettingsService, SettingsProfile, AISettings } from '../../services/settings.service';
-import { DatePipe } from '@angular/common';
 import { SettingsFormData } from './models/settings-form-data.interface';
 import { ProfileFormData } from './models/profile-form-data.interface';
 
 @Component({
   selector: 'app-settings',
-  imports: [ReactiveFormsModule, RouterLink, DatePipe],
+  imports: [ReactiveFormsModule, RouterLink],
   providers: [SettingsService],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
@@ -67,6 +66,23 @@ export class SettingsComponent implements OnInit {
     }),
   });
 
+  // Computed signals for template-heavy getters
+  activeProfile = computed(() => this.profiles().find((p) => p.id === this.activeProfileId()));
+
+  activeProfileIdValue = computed(() => this.activeProfileId());
+
+  currentEditingProfile = computed(() => (this.showEditProfile() ? this.editingProfile : null));
+
+  isUsingDefaults = computed(() => {
+    const defaults = this.settingsService.getDefaultSettings();
+    const formValue = this.settingsForm.getRawValue();
+    return (
+      formValue.temperature === defaults.temperature &&
+      formValue.topK === defaults.topK &&
+      formValue.systemPrompt === defaults.systemPrompt
+    );
+  });
+
   constructor() {
     console.log('🔷 SettingsComponent constructor');
 
@@ -86,33 +102,12 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  get activeProfile(): SettingsProfile | undefined {
-    return this.profiles().find((p) => p.id === this.activeProfileId());
-  }
-
-  get currentEditingProfile(): SettingsProfile | null {
-    if (this.showEditProfile()) {
-      return this.editingProfile;
-    }
-    return null;
-  }
-
   async ngOnInit() {
     console.log('🔷 [POPUP OPENED] SettingsComponent ngOnInit - loading settings from storage');
     // ALWAYS reload from storage when popup opens
     await this.settingsService.loadSettings();
     console.log('🟢 [POPUP OPENED] Settings loaded from storage, hiding loading state');
     this.loading.set(false);
-  }
-
-  get isUsingDefaults(): boolean {
-    const defaults = this.settingsService.getDefaultSettings();
-    const formValue = this.settingsForm.getRawValue();
-    return (
-      formValue.temperature === defaults.temperature &&
-      formValue.topK === defaults.topK &&
-      formValue.systemPrompt === defaults.systemPrompt
-    );
   }
 
   async onSave() {
@@ -312,7 +307,7 @@ export class SettingsComponent implements OnInit {
   }
 
   isProfileActive(profile: SettingsProfile): boolean {
-    return profile.id === this.activeProfileId();
+    return profile.id === this.activeProfileIdValue();
   }
 
   duplicateProfile(profile: SettingsProfile) {

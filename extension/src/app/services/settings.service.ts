@@ -10,8 +10,6 @@ export interface SettingsProfile {
   id: string;
   name: string;
   settings: AISettings;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface SettingsStorage {
@@ -134,13 +132,10 @@ export class SettingsService {
   }
 
   private async createDefaultProfile(): Promise<void> {
-    const now = new Date();
     const defaultProfile: SettingsProfile = {
       id: 'default',
       name: 'Default Profile',
       settings: DEFAULT_SETTINGS,
-      createdAt: now,
-      updatedAt: now,
     };
 
     const storage: SettingsStorage = {
@@ -157,15 +152,12 @@ export class SettingsService {
   }
 
   async createProfile(name: string, settings: AISettings): Promise<SettingsProfile> {
-    const now = new Date();
     const id = `profile_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     const newProfile: SettingsProfile = {
       id,
       name,
       settings: { ...settings },
-      createdAt: now,
-      updatedAt: now,
     };
 
     const currentProfiles = this.profiles();
@@ -199,8 +191,6 @@ export class SettingsService {
       id: currentProfile.id,
       name: updates.name ?? currentProfile.name,
       settings: updates.settings ?? currentProfile.settings,
-      createdAt: currentProfile.createdAt,
-      updatedAt: new Date(),
     };
 
     const updatedProfiles = [...currentProfiles];

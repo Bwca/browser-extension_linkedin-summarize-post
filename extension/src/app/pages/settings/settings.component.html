@@ -31,7 +31,6 @@
         <div class="profile-meta">
           <span class="meta-item">Temp: {{ profile.settings.temperature.toFixed(1) }}</span>
           <span class="meta-item">Top K: {{ profile.settings.topK }}</span>
-          <span class="meta-item">Updated: {{ profile.updatedAt | date : 'short' }}</span>
         </div>
 
         <div class="profile-actions">
@@ -73,10 +72,10 @@
   </div>
 
   <!-- Quick Edit Active Profile -->
-  @if (activeProfile) {
+  @if (activeProfile()) {
   <div class="active-profile-section">
     <div class="section-header">
-      <h2>Edit Active Profile: {{ activeProfile.name }}</h2>
+      <h2>Edit Active Profile: {{ activeProfile()!.name }}</h2>
     </div>
 
     <form [formGroup]="settingsForm" (ngSubmit)="onSave()" class="settings-form">
@@ -287,11 +286,11 @@
   }
 
   <!-- Edit Profile Modal -->
-  @if (showEditProfile() && currentEditingProfile) {
+  @if (showEditProfile() && currentEditingProfile()) {
   <div class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Edit Profile: {{ currentEditingProfile.name }}</h3>
+        <h3>Edit Profile: {{ currentEditingProfile()!.name }}</h3>
         <button type="button" class="modal-close" (click)="cancelEditProfile()">×</button>
       </div>
       <form [formGroup]="profileForm" (ngSubmit)="saveEditedProfile()" class="modal-body">
