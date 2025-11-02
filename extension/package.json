@@ -21,6 +21,7 @@
       }
     ]
   },
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@angular/common": "^20.3.0",

@@ -12,9 +12,15 @@ FeedBurner adds "Summarize" buttons to LinkedIn posts. Click one and get a bruta
 - **Corporate buzzword** nonsense
 - **Genuine insights** (when they exist!)
 
-Each summary comes with color-coded labels so you can quickly spot manipulation tactics vs. actual value.
+Each summary comes with unique, color-coded labels that perfectly capture the post's real intent.
 
 ## 🚀 Installation & Setup
+
+### Requirements
+
+- **Chrome 127+** (required for AI features)
+- **Desktop Chrome** (extensions don't work on mobile)
+- **Experimental AI features enabled** (see step 2)
 
 ### 1. Install from Chrome Web Store
 
@@ -22,15 +28,17 @@ Each summary comes with color-coded labels so you can quickly spot manipulation 
 
 ### 2. Enable Chrome AI (Required)
 
-The extension uses Chrome's built-in AI model - you need to enable it first:
+**Important:** The extension requires Chrome's experimental AI features to be enabled:
 
 1. Go to `chrome://flags` in your browser
 2. Search for **"Prompt API for Gemini Nano"**
 3. Set it to **"Enabled"**
 4. Search for **"Optimization Guide on Device Model"**
 5. Set it to **"Enabled BypassPerfRequirement"**
-6. **Restart Chrome**
+6. **Restart Chrome completely**
 7. Wait 2-5 minutes for Chrome to download the AI model
+
+**Note:** This extension uses Chrome's experimental Prompt API. The AI model runs entirely on your device - no data is sent to external servers.
 
 ### 3. Start Using It
 
@@ -53,8 +61,8 @@ The extension uses Chrome's built-in AI model - you need to enable it first:
 Each analysis includes:
 
 - **One brutal sentence** summary
-- **2-3 labels** identifying the post type
-- **Color coding** for quick visual scanning
+- **1-2 unique labels** created specifically for this post
+- **Auto-generated colors** for easy visual scanning
 
 ### Customizing the AI
 
@@ -64,24 +72,18 @@ Click the extension icon to access settings:
 - **Top K** (1-10): Limits word choice variety
 - **System Prompt**: Completely customize how the AI analyzes posts
 
-## 🎨 Label Categories
+## 🎨 Dynamic Labels
 
-The AI detects these patterns with specific colors:
+The AI doesn't use predefined categories - it creates **unique, creative labels** for each post based on the content. Labels are automatically color-coded for easy visual scanning.
 
-| Label                  | Color     | What It Means                           |
-| ---------------------- | --------- | --------------------------------------- |
-| **Engagement-Bait**    | 🔴 Red    | "Agree?" "Thoughts?" click tactics      |
-| **Ragebait**           | 🔴 Red    | Designed to provoke emotional responses |
-| **Self-Promotion**     | 🟣 Purple | Marketing disguised as sharing          |
-| **Humblebrag**         | 🟠 Orange | Subtle showing off                      |
-| **Made-Up Story**      | 🌸 Pink   | Fabricated narratives                   |
-| **Virtue Signaling**   | 🟠 Orange | Performative morality                   |
-| **Cringe**             | 💖 Pink   | Awkward or embarrassing                 |
-| **Thought Leadership** | 🔵 Blue   | Genuine industry insights               |
-| **Genuine Insight**    | 🟢 Green  | Actually useful information             |
-| **Educational**        | 💙 Blue   | Teaching real value                     |
-| **Inspirational**      | 🟡 Yellow | Authentic motivation                    |
-| **Job Posting**        | 🟢 Green  | Legitimate recruiting                   |
+### How It Works
+
+- AI analyzes each post individually
+- Creates 1-2 unique labels per post (never reused)
+- Labels are lowercase, hyphenated, and brutally honest
+- Colors are generated automatically and consistently
+
+**Note:** The AI creates completely unique labels for each post, so you'll see creative, savage descriptions that perfectly capture the post's intent!
 
 ## ⚙️ Advanced Settings
 
@@ -108,9 +110,10 @@ Want the AI to focus on specific patterns? Write your own prompt! The default is
 ### Extension Not Working?
 
 1. **Check Chrome AI is enabled** - Go to `chrome://flags` and verify both flags are set
-2. **Restart Chrome** - Required after enabling AI flags
-3. **Wait for model download** - First use may take a few minutes
-4. **Refresh LinkedIn** - Reload the page to see buttons
+2. **Restart Chrome completely** - Required after enabling AI flags
+3. **Wait for model download** - First use may take 2-5 minutes
+4. **Check permissions** - Extension needs `aiLanguageModel` and `tabs` permissions
+5. **Refresh LinkedIn page** - Reload the page to see buttons
 
 ### Buttons Not Appearing?
 
@@ -126,13 +129,9 @@ Want the AI to focus on specific patterns? Write your own prompt! The default is
 
 ## 🔒 Privacy & Security
 
-**100% Private & Local:**
-
 - All AI processing happens on your device
-- No data sent to external servers
-- No analytics or tracking
+- Extension itself does not collect any data
 - Settings stored locally in Chrome
-- Nothing leaves your computer
 
 The extension only reads LinkedIn post content to analyze it - no personal data collection whatsoever.
 
@@ -142,20 +141,17 @@ The extension only reads LinkedIn post content to analyze it - no personal data 
 A: No, Chrome extensions only work on desktop Chrome.
 
 **Q: Can I use this on other sites?**
-A: Currently only works on LinkedIn feed pages.
+A: Currently only works on LinkedIn feed pages. The extension specifically looks for LinkedIn's DOM structure to extract post content.
 
 **Q: Is the AI always right?**
 A: The AI is trained to be ruthlessly skeptical, but it's still AI - use your judgment!
-
-**Q: Can I customize the labels?**
-A: You can modify the system prompt to change how the AI categorizes posts.
 
 **Q: Does this slow down LinkedIn?**
 A: Minimal impact - AI processing happens locally and only when you click summarize.
 
 ## 📝 License
 
-ISC License
+MIT License
 
 ---
 
