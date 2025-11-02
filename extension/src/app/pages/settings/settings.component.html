@@ -1,123 +1,381 @@
 <div class="settings-container">
   <div class="header">
     <a routerLink="/" class="back-btn">← Back</a>
-    <h1>AI Settings</h1>
+    <h1>AI Settings Profiles</h1>
   </div>
 
   @if (loading()) {
   <div class="loading-state">
-    <p>Loading settings...</p>
+    <p>Loading profiles...</p>
   </div>
   } @else {
-  <form (ngSubmit)="onSave()" class="settings-form">
-    <div class="form-group">
-      <label for="temperature">
-        Temperature
-        <span class="help-text">Controls randomness (0.0 - 1.0)</span>
-      </label>
-      <div class="input-group">
-        <input
-          type="range"
-          id="temperature"
-          name="temperature"
-          min="0"
-          max="1"
-          step="0.1"
-          [(ngModel)]="temperature"
-          (input)="onTemperatureChange()"
-        />
-        <span class="value-display">{{ temperature.toFixed(1) }}</span>
-      </div>
-      <p class="description">
-        Higher values (0.8-1.0) make output more creative and varied. Lower values (0.0-0.3)
-        make it more focused and deterministic.
-      </p>
-    </div>
-
-    <div class="form-group">
-      <label for="topK">
-        Top K
-        <span class="help-text">Limits vocabulary selection</span>
-      </label>
-      <div class="input-group">
-        <input
-          type="range"
-          id="topK"
-          name="topK"
-          min="1"
-          max="10"
-          step="1"
-          [(ngModel)]="topK"
-          (input)="onTopKChange()"
-        />
-        <span class="value-display">{{ topK }}</span>
-      </div>
-      <p class="description">
-        Lower values (1-3) make output more focused. Higher values (8-10) allow more diverse
-        vocabulary.
-      </p>
-    </div>
-
-    <div class="form-group">
-      <label for="systemPrompt">
-        System Prompt
-        <span class="help-text">Instructions for the AI</span>
-      </label>
-      <textarea
-        id="systemPrompt"
-        name="systemPrompt"
-        [(ngModel)]="systemPrompt"
-        rows="15"
-        class="prompt-textarea"
-      ></textarea>
-      <button type="button" class="btn-link" (click)="resetPromptToDefault()">
-        Reset prompt to default
-      </button>
-      <p class="description">
-        Customize how the AI analyzes LinkedIn posts. Changes take effect after saving.
-      </p>
-    </div>
-
-    <div class="form-actions">
-      <button type="submit" class="btn btn-primary" [disabled]="saving()">
-        {{ saving() ? 'Saving...' : 'Save Settings' }}
-      </button>
-      <button type="button" class="btn btn-secondary" (click)="confirmReset()" [disabled]="saving() || isUsingDefaults">
-        Reset to Defaults
+  <!-- Profiles List -->
+  <div class="profiles-section">
+    <div class="section-header">
+      <h2>Your Profiles</h2>
+      <button type="button" class="btn btn-primary" (click)="startAddProfile()">
+        + Add Profile
       </button>
     </div>
 
-    @if (isUsingDefaults) {
-    <div class="info-message">
-      ℹ️ You are using default settings
-    </div>
-    }
+    <div class="profiles-list">
+      @for (profile of profiles(); track profile.id) {
+      <div class="profile-card" [class.active]="isProfileActive(profile)">
+        <div class="profile-header">
+          <h3>{{ profile.name }}</h3>
+          @if (isProfileActive(profile)) {
+          <span class="active-badge">Active</span>
+          }
+        </div>
 
-    @if (showResetConfirm()) {
-    <div class="confirm-dialog">
-      <div class="confirm-content">
-        <h3>⚠️ Reset to Defaults?</h3>
-        <p>This will restore all settings (temperature, topK, and system prompt) to their default values. This action cannot be undone.</p>
-        <div class="confirm-actions">
-          <button type="button" class="btn btn-danger" (click)="onReset()" [disabled]="saving()">
-            Yes, Reset Everything
+        <div class="profile-meta">
+          <span class="meta-item">Temp: {{ profile.settings.temperature.toFixed(1) }}</span>
+          <span class="meta-item">Top K: {{ profile.settings.topK }}</span>
+          <span class="meta-item">Updated: {{ profile.updatedAt | date:'short' }}</span>
+        </div>
+
+        <div class="profile-actions">
+          @if (!isProfileActive(profile)) {
+          <button type="button" class="btn btn-sm btn-outline" (click)="previewProfileSettings(profile)">
+            👁️ Preview
           </button>
-          <button type="button" class="btn btn-secondary" (click)="cancelReset()" [disabled]="saving()">
+          <button type="button" class="btn btn-sm btn-primary" (click)="switchToProfile(profile.id)">
+            Switch To
+          </button>
+          }
+          <button type="button" class="btn btn-sm btn-outline" (click)="startEditProfile(profile)">
+            ✏️ Edit
+          </button>
+          <button type="button" class="btn btn-sm btn-outline" (click)="duplicateProfile(profile)">
+            📋 Duplicate
+          </button>
+          @if (profiles().length > 1) {
+          <button type="button" class="btn btn-sm btn-danger" (click)="confirmDeleteProfile(profile)">
+            🗑️ Delete
+          </button>
+          }
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Quick Edit Active Profile -->
+  @if (activeProfile) {
+  <div class="active-profile-section">
+    <div class="section-header">
+      <h2>Edit Active Profile: {{ activeProfile.name }}</h2>
+    </div>
+
+    <form (ngSubmit)="onSave()" class="settings-form">
+      <div class="form-group">
+        <label for="temperature">
+          Temperature
+          <span class="help-text">Controls randomness (0.0 - 1.0)</span>
+        </label>
+        <div class="input-group">
+          <input
+            type="range"
+            id="temperature"
+            name="temperature"
+            min="0"
+            max="1"
+            step="0.1"
+            [(ngModel)]="temperature"
+            (input)="onTemperatureChange()"
+          />
+          <span class="value-display">{{ temperature.toFixed(1) }}</span>
+        </div>
+        <p class="description">
+          Higher values (0.8-1.0) make output more creative and varied. Lower values (0.0-0.3)
+          make it more focused and deterministic.
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label for="topK">
+          Top K
+          <span class="help-text">Limits vocabulary selection</span>
+        </label>
+        <div class="input-group">
+          <input
+            type="range"
+            id="topK"
+            name="topK"
+            min="1"
+            max="10"
+            step="1"
+            [(ngModel)]="topK"
+            (input)="onTopKChange()"
+          />
+          <span class="value-display">{{ topK }}</span>
+        </div>
+        <p class="description">
+          Lower values (1-3) make output more focused. Higher values (8-10) allow more diverse
+          vocabulary.
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label for="systemPrompt">
+          System Prompt
+          <span class="help-text">Instructions for the AI</span>
+        </label>
+        <textarea
+          id="systemPrompt"
+          name="systemPrompt"
+          [(ngModel)]="systemPrompt"
+          rows="12"
+          class="prompt-textarea"
+        ></textarea>
+        <button type="button" class="btn-link" (click)="resetPromptToDefault()">
+          Reset prompt to default
+        </button>
+        <p class="description">
+          Customize how the AI analyzes LinkedIn posts. Changes take effect after saving.
+        </p>
+      </div>
+
+      <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="saving()">
+        {{ saving() ? 'Saving...' : 'Save Changes' }}
+      </button>
+      </div>
+    </form>
+  </div>
+  }
+  }
+
+  <!-- Preview Modal -->
+  @if (previewProfile) {
+  <div class="modal-overlay" (click)="closePreview()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Preview: {{ previewProfile.name }}</h3>
+        <button type="button" class="modal-close" (click)="closePreview()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="preview-settings">
+          <div class="setting-item">
+            <strong>Temperature:</strong> {{ previewProfile.settings.temperature.toFixed(1) }}
+          </div>
+          <div class="setting-item">
+            <strong>Top K:</strong> {{ previewProfile.settings.topK }}
+          </div>
+          <div class="setting-item">
+            <strong>System Prompt:</strong>
+            <pre class="prompt-preview">{{ previewProfile.settings.systemPrompt }}</pre>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-primary" (click)="switchToProfile(previewProfile.id); closePreview()">
+            Switch to This Profile
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="closePreview()">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Add Profile Modal -->
+  @if (showAddProfile()) {
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add New Profile</h3>
+        <button type="button" class="modal-close" (click)="cancelAddProfile()">×</button>
+      </div>
+      <form (ngSubmit)="saveNewProfile()" class="modal-body">
+        <div class="form-group">
+          <label for="newProfileName">Profile Name</label>
+          <input
+            type="text"
+            id="newProfileName"
+            [(ngModel)]="profileName"
+            name="profileName"
+            placeholder="Enter profile name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="newTemperature">Temperature</label>
+          <div class="input-group">
+            <input
+              type="range"
+              id="newTemperature"
+              name="newTemperature"
+              min="0"
+              max="1"
+              step="0.1"
+              [(ngModel)]="temperature"
+              (input)="onTemperatureChange()"
+            />
+            <span class="value-display">{{ temperature.toFixed(1) }}</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="newTopK">Top K</label>
+          <div class="input-group">
+            <input
+              type="range"
+              id="newTopK"
+              name="newTopK"
+              min="1"
+              max="10"
+              step="1"
+              [(ngModel)]="topK"
+              (input)="onTopKChange()"
+            />
+            <span class="value-display">{{ topK }}</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="newSystemPrompt">System Prompt</label>
+          <textarea
+            id="newSystemPrompt"
+            name="newSystemPrompt"
+            [(ngModel)]="systemPrompt"
+            rows="10"
+            class="prompt-textarea"
+          ></textarea>
+          <button type="button" class="btn-link" (click)="resetPromptToDefault()">
+            Reset to default prompt
+          </button>
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="saving()">
+            {{ saving() ? 'Creating...' : 'Create Profile' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancelAddProfile()" [disabled]="saving()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  }
+
+  <!-- Edit Profile Modal -->
+  @if (showEditProfile() && currentEditingProfile) {
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Edit Profile: {{ currentEditingProfile.name }}</h3>
+        <button type="button" class="modal-close" (click)="cancelEditProfile()">×</button>
+      </div>
+      <form (ngSubmit)="saveEditedProfile()" class="modal-body">
+        <div class="form-group">
+          <label for="editProfileName">Profile Name</label>
+          <input
+            type="text"
+            id="editProfileName"
+            [(ngModel)]="profileName"
+            name="editProfileName"
+            placeholder="Enter profile name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="editTemperature">Temperature</label>
+          <div class="input-group">
+            <input
+              type="range"
+              id="editTemperature"
+              name="editTemperature"
+              min="0"
+              max="1"
+              step="0.1"
+              [(ngModel)]="temperature"
+              (input)="onTemperatureChange()"
+            />
+            <span class="value-display">{{ temperature.toFixed(1) }}</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editTopK">Top K</label>
+          <div class="input-group">
+            <input
+              type="range"
+              id="editTopK"
+              name="editTopK"
+              min="1"
+              max="10"
+              step="1"
+              [(ngModel)]="topK"
+              (input)="onTopKChange()"
+            />
+            <span class="value-display">{{ topK }}</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editSystemPrompt">System Prompt</label>
+          <textarea
+            id="editSystemPrompt"
+            name="editSystemPrompt"
+            [(ngModel)]="systemPrompt"
+            rows="10"
+            class="prompt-textarea"
+          ></textarea>
+          <button type="button" class="btn-link" (click)="resetPromptToDefault()">
+            Reset to default prompt
+          </button>
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="saving()">
+            {{ saving() ? 'Saving...' : 'Save Changes' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancelEditProfile()" [disabled]="saving()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  }
+
+  <!-- Delete Confirmation Modal -->
+  @if (showDeleteConfirm().profile) {
+  <div class="modal-overlay">
+    <div class="modal-content confirm-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>⚠️ Delete Profile?</h3>
+        <button type="button" class="modal-close" (click)="cancelDeleteProfile()">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete the profile <strong>{{ showDeleteConfirm().profile?.name }}</strong>?</p>
+        <p class="warning-text">This action cannot be undone.</p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-danger" (click)="deleteProfile()" [disabled]="saving()">
+            {{ saving() ? 'Deleting...' : 'Yes, Delete' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancelDeleteProfile()" [disabled]="saving()">
             Cancel
           </button>
         </div>
       </div>
     </div>
-    }
-
-    @if (message()) {
-    <div class="message" [class.error]="isError()">
-      {{ message() }}
-    </div>
-    }
-  </form>
+  </div>
   }
 
+  <!-- Messages -->
+  @if (message()) {
+  <div class="message" [class.error]="isError()">
+    {{ message() }}
+  </div>
+  }
+
+  <!-- Info Box -->
   <div class="info-box">
     <h3>💡 Tips</h3>
     <ul>
@@ -127,6 +385,7 @@
       <li><strong>Temperature 0.3 + Top K 1</strong>: Very consistent, predictable results</li>
       <li><strong>Temperature 1.0 + Top K 8</strong>: More creative, varied summaries</li>
     </ul>
+    <p><strong>💡 Profile Management:</strong> Create different profiles for different analysis styles. For example, one profile for "gentle" feedback and another for "ruthless" criticism.</p>
   </div>
 </div>
 
