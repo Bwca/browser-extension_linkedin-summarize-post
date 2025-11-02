@@ -1,175 +1,162 @@
 # FeedBurner
 
-A Chrome extension that uses Chrome's built-in AI (Gemini Nano) to burn through your feed with brutally honest summaries. Cut through the BS and see the real intent behind every post with AI-powered analysis.
+Cut through LinkedIn's BS with AI-powered analysis. See the real intent behind every post - from self-promotion and engagement bait to genuine insights. Uses Chrome's built-in AI for privacy-first, on-device analysis.
 
-## ✨ Features
+## ✨ What It Does
 
-- 🤖 **On-Device AI** - Uses Chrome's Prompt API (Gemini Nano) for privacy-first analysis
-- 🎯 **Ruthless Detection** - Identifies self-promotion, humblebrags, engagement-bait, made-up stories, and more
-- 🏷️ **Smart Labeling** - Multiple labels per post (e.g., "engagement-bait, self-promotion")
-- 🎨 **Color-Coded Toasts** - Visual notifications with category-specific colors
-- ⚙️ **Customizable Settings** - Adjust AI parameters (temperature, topK) and system prompt
-- 📝 **Context-Aware** - Considers author's title and role for better analysis
-- 🔄 **Persistent Settings** - Settings sync across devices via Chrome storage
+FeedBurner adds "Summarize" buttons to LinkedIn posts. Click one and get a brutally honest AI analysis that identifies:
 
-## 🚀 Quick Start
+- **Self-promotion** disguised as "thought leadership"
+- **Engagement bait** like "Agree?" and "Thoughts?"
+- **Humblebrags** and made-up success stories
+- **Corporate buzzword** nonsense
+- **Genuine insights** (when they exist!)
 
-### Prerequisites
+Each summary comes with color-coded labels so you can quickly spot manipulation tactics vs. actual value.
 
-- Node.js 18+ and npm
-- Chrome 127+ (with built-in AI support)
+## 🚀 Installation & Setup
 
-### Installation
+### 1. Install from Chrome Web Store
 
-```bash
-# Install dependencies
-npm install
+[Install FeedBurner](https://chromewebstore.google.com/) _(link coming soon)_
 
-# Build the extension
-npm run build
-```
+### 2. Enable Chrome AI (Required)
 
-### Load in Chrome
+The extension uses Chrome's built-in AI model - you need to enable it first:
 
-1. Build the project: `npm run build`
-2. Navigate to `chrome://extensions/`
-3. Enable **"Developer mode"** (toggle in top right)
-4. Click **"Load unpacked"**
-5. Select `dist/linkedin-summarize-post` folder
-
-### Enable Chrome AI
-
-**Required for the extension to work:**
-
-1. Navigate to `chrome://flags`
+1. Go to `chrome://flags` in your browser
 2. Search for **"Prompt API for Gemini Nano"**
-3. Set to **"Enabled"**
+3. Set it to **"Enabled"**
 4. Search for **"Optimization Guide on Device Model"**
-5. Set to **"Enabled BypassPerfRequirement"**
+5. Set it to **"Enabled BypassPerfRequirement"**
 6. **Restart Chrome**
 7. Wait 2-5 minutes for Chrome to download the AI model
 
-### Usage
+### 3. Start Using It
 
-1. Go to [LinkedIn Feed](https://www.linkedin.com/feed/)
-2. Look for **"Summarize"** buttons on posts
-3. Click to see AI analysis with brutally honest labels
-4. Open extension popup to customize AI settings
+1. Go to [LinkedIn](https://www.linkedin.com/feed/)
+2. Look for blue **"Summarize"** buttons on posts
+3. Click to see the AI analysis
+4. Use the extension icon to customize settings
 
-## 📂 Project Structure
+## 🎯 How to Use
 
-```
-linkedin-summarize-post/
-├── src/
-│   ├── app/                          # Angular popup application
-│   │   ├── pages/
-│   │   │   ├── home/                 # Home page component
-│   │   │   └── settings/             # Settings page component
-│   │   ├── services/
-│   │   │   └── settings.service.ts   # Settings management
-│   │   ├── app.ts                    # Root component
-│   │   ├── app.routes.ts             # Angular routes
-│   │   └── app.html                  # Root template
-│   ├── extension-scripts/            # Extension scripts (tsup)
-│   │   ├── background.ts             # Background service worker
-│   │   └── content.ts                # Content script (LinkedIn)
-│   ├── manifest.json                 # Extension manifest
-│   ├── index.html                    # Popup HTML
-│   └── main.ts                       # Angular bootstrap
-├── dist/                             # Build output
-├── angular.json                      # Angular configuration
-├── tsup.config.ts                    # Extension bundler config
-└── package.json
-```
+### Basic Usage
 
-## 🎨 Categories
+- Visit your LinkedIn feed
+- Find posts with **"Summarize"** buttons
+- Click to get instant AI analysis
+- View the color-coded summary in a toast notification
 
-The AI detects these categories with color-coded badges:
+### Understanding the Results
 
-- 🔴 **Engagement-Bait** - "Agree?" "Thoughts?" tactics
-- 🔴 **Ragebait** - Designed to provoke anger
-- 🟣 **Self-Promotion** - Marketing themselves/company
-- 🟠 **Humblebrag** - Disguised showing off
-- 🌸 **Made-Up Story** - Fabricated narratives
-- 🟠 **Virtue Signaling** - Performative morality
-- 💖 **Cringe** - Awkward or embarrassing
-- 🔵 **Thought Leadership** - Genuine insights
-- 🟢 **Genuine Insight** - Actually useful
-- 💙 **Educational** - Teaching value
-- 🟡 **Inspirational** - Motivational
-- 🟢 **Job Posting** - Recruiting
+Each analysis includes:
 
-## ⚙️ Settings
+- **One brutal sentence** summary
+- **2-3 labels** identifying the post type
+- **Color coding** for quick visual scanning
 
-Open the extension popup to configure:
+### Customizing the AI
 
-- **Temperature** (0.0-1.0) - Controls AI randomness
-- **Top K** (1-10) - Limits vocabulary selection  
-- **System Prompt** - Customize AI behavior
+Click the extension icon to access settings:
 
-Settings persist across sessions and sync across devices.
+- **Temperature** (0.0-1.0): Controls how "creative" vs "consistent" the AI is
+- **Top K** (1-10): Limits word choice variety
+- **System Prompt**: Completely customize how the AI analyzes posts
 
-## 🛠️ Development
+## 🎨 Label Categories
 
-### Build Commands
+The AI detects these patterns with specific colors:
 
-```bash
-# Production build
-npm run build
+| Label                  | Color     | What It Means                           |
+| ---------------------- | --------- | --------------------------------------- |
+| **Engagement-Bait**    | 🔴 Red    | "Agree?" "Thoughts?" click tactics      |
+| **Ragebait**           | 🔴 Red    | Designed to provoke emotional responses |
+| **Self-Promotion**     | 🟣 Purple | Marketing disguised as sharing          |
+| **Humblebrag**         | 🟠 Orange | Subtle showing off                      |
+| **Made-Up Story**      | 🌸 Pink   | Fabricated narratives                   |
+| **Virtue Signaling**   | 🟠 Orange | Performative morality                   |
+| **Cringe**             | 💖 Pink   | Awkward or embarrassing                 |
+| **Thought Leadership** | 🔵 Blue   | Genuine industry insights               |
+| **Genuine Insight**    | 🟢 Green  | Actually useful information             |
+| **Educational**        | 💙 Blue   | Teaching real value                     |
+| **Inspirational**      | 🟡 Yellow | Authentic motivation                    |
+| **Job Posting**        | 🟢 Green  | Legitimate recruiting                   |
 
-# Development mode (Angular only)
-ng serve
+## ⚙️ Advanced Settings
 
-# Watch mode
-ng build --watch
-```
+Access settings by clicking the extension icon:
 
-### Architecture
+### Temperature
 
-- **Angular 19** - Popup UI with routing
-- **TypeScript** - Type-safe development
-- **Tsup** - Extension script bundling
-- **SCSS** - Styling with nesting
-- **Chrome Storage API** - Settings persistence
-- **Chrome AI API** - On-device analysis
+- **Lower (0.1-0.3)**: More consistent, predictable analysis
+- **Higher (0.7-0.9)**: More creative, varied interpretations
+- **Default: 0.8** - Balanced approach
 
-### Making Changes
+### Top K
 
-1. Modify files in `src/`
-2. Run `npm run build`
-3. Reload extension in `chrome://extensions/`
-4. Reload LinkedIn page
+- **Lower (1-3)**: More focused vocabulary
+- **Higher (7-10)**: More diverse word choice
+- **Default: 3** - Good balance
 
-## 🤖 How It Works
+### Custom System Prompt
 
-1. **Content Script Injection** - `content.ts` runs on LinkedIn pages
-2. **Button Injection** - Adds "Summarize" buttons to each post
-3. **Content Extraction** - Captures post text and author context
-4. **AI Analysis** - Sends to Chrome AI with specialized prompt
-5. **Smart Labeling** - AI identifies manipulation tactics vs genuine content
-6. **Toast Display** - Shows color-coded summary with labels
+Want the AI to focus on specific patterns? Write your own prompt! The default is designed to be ruthlessly skeptical of LinkedIn posturing.
 
-### AI Prompt Strategy
+## 🔧 Troubleshooting
 
-The AI is instructed to:
-- Be ruthlessly skeptical
-- See through performative wrappers
-- Prioritize manipulation tactics (bait > genuine content)
-- Never mix bait with thought-leadership
-- Consider author's role for context
-- Provide 1-2 labels per post
+### Extension Not Working?
 
-## 🔒 Privacy
+1. **Check Chrome AI is enabled** - Go to `chrome://flags` and verify both flags are set
+2. **Restart Chrome** - Required after enabling AI flags
+3. **Wait for model download** - First use may take a few minutes
+4. **Refresh LinkedIn** - Reload the page to see buttons
 
-- **100% On-Device** - All AI processing happens locally
-- **No External APIs** - No data sent to servers
-- **Chrome Storage Only** - Settings stored locally
-- **No Analytics** - No tracking whatsoever
+### Buttons Not Appearing?
+
+- Make sure you're on `linkedin.com/feed/`
+- Try scrolling down to load more posts
+- Check if LinkedIn updated their layout (extension may need updating)
+
+### AI Giving Weird Results?
+
+- Try adjusting the **Temperature** setting
+- The AI model processes everything locally - no internet required
+- Results depend on Chrome's AI model quality
+
+## 🔒 Privacy & Security
+
+**100% Private & Local:**
+
+- All AI processing happens on your device
+- No data sent to external servers
+- No analytics or tracking
+- Settings stored locally in Chrome
+- Nothing leaves your computer
+
+The extension only reads LinkedIn post content to analyze it - no personal data collection whatsoever.
+
+## ❓ FAQ
+
+**Q: Does this work on mobile?**
+A: No, Chrome extensions only work on desktop Chrome.
+
+**Q: Can I use this on other sites?**
+A: Currently only works on LinkedIn feed pages.
+
+**Q: Is the AI always right?**
+A: The AI is trained to be ruthlessly skeptical, but it's still AI - use your judgment!
+
+**Q: Can I customize the labels?**
+A: You can modify the system prompt to change how the AI categorizes posts.
+
+**Q: Does this slow down LinkedIn?**
+A: Minimal impact - AI processing happens locally and only when you click summarize.
 
 ## 📝 License
 
-ISC
+ISC License
 
-## 🙏 Credits
+---
 
-Project structure inspired by [CursIt Extension](https://github.com/volodymir-yepishev/cursit)
+**Made with ❤️ for LinkedIn users tired of the BS**
