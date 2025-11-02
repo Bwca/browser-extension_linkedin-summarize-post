@@ -3,7 +3,8 @@ import { HomeComponent } from './pages/home/home.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: SettingsComponent },
+  { path: 'about', component: HomeComponent },
   { path: 'settings', component: SettingsComponent },
   { path: '**', redirectTo: '' },
 ];
