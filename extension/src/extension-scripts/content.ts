@@ -45,12 +45,6 @@ async function init() {
   // Initialize Chrome AI
   await aiService.initAI();
 
-  // Wait a bit for the page to render
-  setTimeout(() => {
-    console.log('FeedBurner: Running initial scan...');
-    domService.addSummarizeButtons(handleSummarizeClick);
-  }, 2000);
-
   // Observe DOM changes to detect new posts as they load
   // Use debouncing to prevent infinite loops
   let timeoutId: number | null = null;

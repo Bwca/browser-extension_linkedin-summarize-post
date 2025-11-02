@@ -51,7 +51,7 @@ EXAMPLES:
 - "SUMMARY: Corporate buzzword salad saying nothing. LABELS: consultant-brain-rot, empty-calories"
 - "SUMMARY: ChatGPT slop with zero original thought. LABELS: ai-garbage, lazy-content"
 - "SUMMARY: Executive's tone-deaf vulnerability theater. LABELS: performative-bs, rich-person-problems"
-- "SUMMARY: Tech bro flexing stack to assert superiority. LABELS: tech-stack-wanker, insufferable-energy"
+- "SUMMARY: Tech bro flexing stack to assert superiority. LABELS: tech-stack-weirdo, insufferable-energy"
 
 Be RUTHLESS. CREATE UNIQUE LABELS. Expose the real intent.`;
 
