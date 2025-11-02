@@ -1,1 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Global element styles */
+h1 {
+  font-size: 1.5rem;
+  color: var(--text-color);
+  margin: 0;
+  font-weight: 600;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}

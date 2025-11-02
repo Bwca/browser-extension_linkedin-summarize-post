@@ -23,43 +23,44 @@
       <div class="profile-card" [class.active]="isProfileActive(profile)">
         <div class="profile-header">
           <h3>{{ profile.name }}</h3>
+          <div class="profile-meta-inline">
+            <span class="meta-item-inline"
+              >Temp: {{ profile.settings.temperature.toFixed(1) }}</span
+            >
+            <span class="meta-item-inline">Top K: {{ profile.settings.topK }}</span>
+          </div>
           @if (isProfileActive(profile)) {
           <span class="active-badge">Active</span>
           }
-        </div>
-
-        <div class="profile-meta">
-          <span class="meta-item">Temp: {{ profile.settings.temperature.toFixed(1) }}</span>
-          <span class="meta-item">Top K: {{ profile.settings.topK }}</span>
         </div>
 
         <div class="profile-actions">
           @if (!isProfileActive(profile)) {
           <button
             type="button"
-            class="btn btn-sm btn-outline"
+            class="btn-profile btn-outline"
             (click)="previewProfileSettings(profile)"
           >
             👁️ Preview
           </button>
           <button
             type="button"
-            class="btn btn-sm btn-primary"
+            class="btn-profile btn-primary"
             (click)="switchToProfile(profile.id)"
           >
             Switch To
           </button>
           }
-          <button type="button" class="btn btn-sm btn-outline" (click)="startEditProfile(profile)">
+          <button type="button" class="btn-profile btn-outline" (click)="startEditProfile(profile)">
             ✏️ Edit
           </button>
-          <button type="button" class="btn btn-sm btn-outline" (click)="duplicateProfile(profile)">
+          <button type="button" class="btn-profile btn-outline" (click)="duplicateProfile(profile)">
             📋 Duplicate
           </button>
           @if (profiles().length > 1) {
           <button
             type="button"
-            class="btn btn-sm btn-danger"
+            class="btn-profile btn-danger"
             (click)="confirmDeleteProfile(profile)"
           >
             🗑️ Delete
@@ -73,10 +74,10 @@
 
   <!-- Quick Edit Active Profile -->
   @if (activeProfile()) {
-  <div class="active-profile-section">
-    <div class="section-header">
+  <details class="active-profile-section">
+    <summary class="section-header">
       <h2>Edit Active Profile: {{ activeProfile()!.name }}</h2>
-    </div>
+    </summary>
 
     <form [formGroup]="settingsForm" (ngSubmit)="onSave()" class="settings-form">
       <div class="form-group">
@@ -143,7 +144,7 @@
         </button>
       </div>
     </form>
-  </div>
+  </details>
   } }
 
   <!-- Preview Modal -->
