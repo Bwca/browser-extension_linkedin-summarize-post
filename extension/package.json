@@ -2,6 +2,7 @@
   "name": "feedburner",
   "version": "1.0.0",
   "description": "Browser extension to burn through your feed with AI-powered summaries",
+  "author": "Volodymyr Yepishev",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
