@@ -196,21 +196,25 @@
           </div>
           }
         </div>
-
-        <div class="modal-actions">
-          <button type="submit" class="btn btn-primary" [disabled]="saving()">
-            {{ saving() ? 'Creating...' : 'Create Profile' }}
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            (click)="cancelAddProfile()"
-            [disabled]="saving()"
-          >
-            Cancel
-          </button>
-        </div>
       </form>
+      <div class="modal-actions">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="saving()"
+          (click)="saveNewProfile()"
+        >
+          {{ saving() ? 'Creating...' : 'Create Profile' }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancelAddProfile()"
+          [disabled]="saving()"
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   </div>
   }
@@ -298,21 +302,25 @@
           </div>
           }
         </div>
-
-        <div class="modal-actions">
-          <button type="submit" class="btn btn-primary" [disabled]="saving()">
-            {{ saving() ? 'Saving...' : 'Save Changes' }}
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            (click)="cancelEditProfile()"
-            [disabled]="saving()"
-          >
-            Cancel
-          </button>
-        </div>
       </form>
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="saving()"
+          (click)="saveEditedProfile()"
+        >
+          {{ saving() ? 'Saving...' : 'Save Changes' }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancelEditProfile()"
+          [disabled]="saving()"
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   </div>
   }
