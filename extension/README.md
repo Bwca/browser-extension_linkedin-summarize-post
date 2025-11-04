@@ -38,7 +38,7 @@ Each summary comes with unique, color-coded labels that perfectly capture the po
 6. **Restart Chrome completely**
 7. Wait 2-5 minutes for Chrome to download the AI model
 
-**Note:** This extension uses Chrome's experimental Prompt API. The AI model runs entirely on your device - no data is sent to external servers.
+**Note:** This extension uses Chrome's experimental Prompt API. The AI model runs entirely on your device - no data is sent to external servers. This extension is not affiliated with Google, Chrome, or any AI providers.
 
 ### 3. Start Using It
 
@@ -154,5 +154,7 @@ A: Minimal impact - AI processing happens locally and only when you click summar
 MIT License
 
 ---
+
+**Disclaimer:** This extension is not affiliated with LinkedIn, Google, Chrome, or any other companies. Use at your own risk.
 
 **Made with ❤️ for LinkedIn users tired of the BS**

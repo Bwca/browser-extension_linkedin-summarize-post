@@ -132,8 +132,8 @@ Full control over AI behavior:
 ## 🔒 Privacy & Data Processing
 
 - **Extension doesn't collect data** - Only reads post content you explicitly choose to analyze
-- **Processed by Google's AI** - Uses Chrome's Prompt API with Gemini Nano model
-- **No control over Google's processing** - We cannot guarantee what Google does with the data
+- **Processed locally by Chrome's built-in AI** - Uses Chrome's experimental Prompt API
+- **No control over Chrome's AI processing** - We cannot guarantee what Chrome/Google does with the data
 - **Settings stored locally** - Your preferences stay on your device
 - **Open source transparency** - Review the code to see exactly what data is processed
 
@@ -144,7 +144,7 @@ Full control over AI behavior:
 - **Frontend**: Angular 20
 - **Build Tool**: Angular CLI + tsup
 - **Chrome Extension**: Manifest V3
-- **AI**: Chrome Prompt API (Gemini Nano)
+- **AI**: Chrome's experimental Prompt API (locally processed)
 
 ### Available Scripts
 
