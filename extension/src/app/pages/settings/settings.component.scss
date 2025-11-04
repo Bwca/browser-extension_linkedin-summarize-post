@@ -43,9 +43,44 @@
 
 .form-group {
   margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 
   &:last-of-type {
     margin-bottom: 0;
+  }
+
+  label {
+    min-width: 120px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0;
+  }
+
+  .input-group {
+    flex: 1;
+  }
+
+  input:not([type='range']),
+  textarea {
+    flex: 1;
+  }
+
+  &.stacked {
+    display: block;
+
+    label {
+      display: block;
+      min-width: auto;
+      margin-bottom: 0.5rem;
+    }
+
+    textarea {
+      flex: none;
+      resize: none;
+      width: 98%;
+    }
   }
 }
 
@@ -538,7 +573,7 @@ input[type='range'] {
 form.modal-body {
   display: flex;
   flex-direction: column;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .modal-body {
