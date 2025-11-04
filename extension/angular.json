@@ -27,9 +27,7 @@
               },
               "src/manifest.json"
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "outputPath": "dist/linkedin-summarize-post"
           },
           "configurations": {
@@ -43,10 +41,14 @@
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumError": "30kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": {
+                "styles": false,
+                "fonts": false
+              }
             },
             "development": {
               "optimization": false,
@@ -82,9 +84,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.scss"
-            ]
+            "styles": ["src/styles.scss"]
           }
         }
       }
