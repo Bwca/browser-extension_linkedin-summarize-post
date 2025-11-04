@@ -71,78 +71,7 @@
       }
     </div>
   </div>
-
-  <!-- Quick Edit Active Profile -->
-  @if (activeProfile()) {
-  <details class="active-profile-section">
-    <summary class="section-header">
-      <h2>Edit Active Profile: {{ activeProfile()!.name }}</h2>
-    </summary>
-
-    <form [formGroup]="settingsForm" (ngSubmit)="onSave()" class="settings-form">
-      <div class="form-group">
-        <label for="temperature">
-          Temperature
-          <span class="help-text">Controls randomness (0.0 - 1.0)</span>
-        </label>
-        <div class="input-group">
-          <input
-            type="range"
-            id="temperature"
-            formControlName="temperature"
-            min="0"
-            max="1"
-            step="0.1"
-          />
-          <span class="value-display">{{
-            settingsForm.get('temperature')?.value?.toFixed(1)
-          }}</span>
-        </div>
-        <p class="description">
-          Higher values (0.8-1.0) make output more creative and varied. Lower values (0.0-0.3) make
-          it more focused and deterministic.
-        </p>
-      </div>
-
-      <div class="form-group">
-        <label for="topK">
-          Top K
-          <span class="help-text">Limits vocabulary selection</span>
-        </label>
-        <div class="input-group">
-          <input type="range" id="topK" formControlName="topK" min="1" max="10" step="1" />
-          <span class="value-display">{{ settingsForm.get('topK')?.value }}</span>
-        </div>
-        <p class="description">
-          Lower values (1-3) make output more focused. Higher values (8-10) allow more diverse
-          vocabulary.
-        </p>
-      </div>
-
-      <div class="form-group">
-        <label for="systemPrompt">
-          System Prompt
-          <span class="help-text">Instructions for the AI</span>
-        </label>
-        <textarea
-          id="systemPrompt"
-          formControlName="systemPrompt"
-          rows="12"
-          class="prompt-textarea"
-        ></textarea>
-        <p class="description">
-          Customize how the AI analyzes LinkedIn posts. Changes take effect after saving.
-        </p>
-      </div>
-
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary" [disabled]="saving()">
-          {{ saving() ? 'Saving...' : 'Save Changes' }}
-        </button>
-      </div>
-    </form>
-  </details>
-  } }
+  }
 
   <!-- Preview Modal -->
   @if (previewProfile) {
