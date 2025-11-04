@@ -1,0 +1,40 @@
+# Chrome Web Store Privacy Practices Justifications - FeedBurner
+
+## Single Purpose Description
+FeedBurner is a browser extension that provides AI-powered analysis of LinkedIn posts. It adds "Summarize" buttons to posts in LinkedIn feeds, allowing users to get instant, brutally honest AI analysis that identifies self-promotion, engagement bait, humblebrags, and genuine insights. The extension uses Chrome's built-in AI (Prompt API) to analyze post content locally on the user's device.
+
+## activeTab Permission Justification
+The activeTab permission is used to inject content scripts into the currently active LinkedIn tab when users click the extension icon or interact with "Summarize" buttons. This permission allows the extension to:
+- Access the current LinkedIn tab's DOM to add "Summarize" buttons to posts
+- Execute content scripts that read post content for AI analysis
+- Display analysis results in toast notifications on the active tab
+
+## Host Permission Justification (https://www.linkedin.com/*)
+The host permission for https://www.linkedin.com/* is required for the content scripts to run on LinkedIn pages. This allows the extension to:
+- Detect LinkedIn post elements in the DOM
+- Inject "Summarize" buttons next to each post
+- Read the content of posts that users choose to analyze
+- Display AI analysis results in user-friendly notifications
+The extension only processes content that users explicitly request by clicking "Summarize" buttons and does not automatically collect or transmit any LinkedIn data.
+
+## Remote Code Use Justification
+Remote code execution is not used in this extension. The extension uses Chrome's built-in Prompt API for Gemini Nano, which runs entirely locally on the user's device. The Content Security Policy (CSP) in the manifest restricts script sources to 'self', meaning only local extension scripts are executed. No external JavaScript or remote code execution is performed.
+
+## Storage Permission Justification
+The storage permission is used to save user preferences and AI configuration settings locally in the browser. This includes:
+- AI model settings (temperature, top K parameters)
+- Custom system prompts for different analysis styles
+- User-created AI profiles for different analysis preferences
+All data is stored locally using Chrome's extension storage API and is never transmitted to external servers. Users can manage and delete their stored settings through the extension's settings interface.
+
+## Data Usage Compliance Certification
+I certify that this extension's data usage complies with the Chrome Web Store Developer Program Policies. The extension:
+- Only processes LinkedIn post content that users explicitly choose to analyze
+- Does not collect, store, or transmit user data beyond local settings
+- Uses Chrome's built-in AI capabilities that run entirely on-device
+- Does not track user behavior or browsing history
+- Provides transparency through open-source code and clear privacy disclosures
+- Only requests the minimum permissions necessary for functionality
+- Stores all user preferences locally and gives users control over their data
+
+Extension data practices are clearly disclosed in the store listing and align with Google's privacy requirements.
