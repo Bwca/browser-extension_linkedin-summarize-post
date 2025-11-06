@@ -3,19 +3,20 @@
 ## Single Purpose Description
 FeedBurner is a browser extension that provides AI-powered analysis of LinkedIn posts. It adds "Summarize" buttons to posts in LinkedIn feeds, allowing users to get instant, brutally honest AI analysis that identifies self-promotion, engagement bait, humblebrags, and genuine insights. The extension uses Chrome's built-in AI (Prompt API) to analyze post content locally on the user's device.
 
-## activeTab Permission Justification
-The activeTab permission is used to inject content scripts into the currently active LinkedIn tab when users click the extension icon or interact with "Summarize" buttons. This permission allows the extension to:
-- Access the current LinkedIn tab's DOM to add "Summarize" buttons to posts
-- Execute content scripts that read post content for AI analysis
-- Display analysis results in toast notifications on the active tab
+## tabs Permission Justification
+The tabs permission is required to communicate between the extension popup and content scripts running on LinkedIn pages. This permission allows the extension to:
+- Query open LinkedIn tabs to send settings updates when users change AI profiles
+- Send messages to content scripts running on LinkedIn pages to update AI settings in real-time
+- Enable dynamic configuration of the AI analysis behavior across all open LinkedIn tabs
+The extension only communicates between its own components and does not access or modify tab content directly.
 
-## Host Permission Justification (https://www.linkedin.com/*)
-The host permission for https://www.linkedin.com/* is required for the content scripts to run on LinkedIn pages. This allows the extension to:
-- Detect LinkedIn post elements in the DOM
-- Inject "Summarize" buttons next to each post
-- Read the content of posts that users choose to analyze
-- Display AI analysis results in user-friendly notifications
-The extension only processes content that users explicitly request by clicking "Summarize" buttons and does not automatically collect or transmit any LinkedIn data.
+## Content Scripts Host Permission Justification (https://www.linkedin.com/*)
+Content scripts are automatically injected into LinkedIn pages matching https://www.linkedin.com/* to provide the core functionality. This allows the extension to:
+- Detect LinkedIn post elements in the DOM and add "Summarize" buttons
+- Read the content of posts that users explicitly choose to analyze by clicking buttons
+- Display AI analysis results in user-friendly toast notifications on the page
+- Maintain separate AI sessions for each LinkedIn tab with user-configured settings
+The extension only processes content that users explicitly request and does not automatically collect, store, or transmit any LinkedIn data beyond what users choose to analyze.
 
 ## Remote Code Use Justification
 Remote code execution is not used in this extension. The extension uses Chrome's built-in Prompt API for Gemini Nano, which runs entirely locally on the user's device. The Content Security Policy (CSP) in the manifest restricts script sources to 'self', meaning only local extension scripts are executed. No external JavaScript or remote code execution is performed.
