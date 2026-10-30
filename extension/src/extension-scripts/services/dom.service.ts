@@ -5,19 +5,7 @@ class DOMService {
   private processedPosts = new WeakSet<Element>();
 
   public addSummarizeButtons(onSummarizeClick: (post: Element) => void): void {
-    // Try multiple selectors for posts
-    let posts = document.querySelectorAll('.feed-shared-update-v2[data-urn]');
-
-    // If no posts found, try alternative selectors
-    if (posts.length === 0) {
-      posts = document.querySelectorAll('[data-urn*="urn:li:activity"]');
-    }
-
-    if (posts.length === 0) {
-      posts = document.querySelectorAll('.feed-shared-update-v2');
-    }
-
-    console.log(`FeedBurner: Found ${posts.length} posts`);
+    const posts = this.findPosts();
 
     let addedCount = 0;
 
@@ -27,13 +15,7 @@ class DOMService {
         return;
       }
 
-      // Find the social action bar (where Like, Comment, etc. buttons are)
-      let actionBar = post.querySelector('.feed-shared-social-action-bar');
-
-      // Try alternative selector if not found
-      if (!actionBar) {
-        actionBar = post.querySelector('[class*="social-action"]');
-      }
+      const actionBar = this.findActionBar(post);
 
       if (!actionBar) {
         return;
@@ -45,8 +27,14 @@ class DOMService {
         return;
       }
 
-      // Create the summarize button
-      const summarizeButton = this.createSummarizeButton(post, onSummarizeClick);
+      // Create the summarize button, borrowing the native Comment button's classes
+      // so it matches LinkedIn's current (hashed) styling
+      const nativeButton = actionBar.querySelector<HTMLElement>('[aria-label="Comment"]');
+      const summarizeButton = this.createSummarizeButton(
+        post,
+        onSummarizeClick,
+        nativeButton?.className
+      );
 
       // Insert the button at the end of the action bar
       actionBar.appendChild(summarizeButton);
@@ -61,7 +49,57 @@ class DOMService {
     }
   }
 
-  public createSummarizeButton(post: Element, onClick: (post: Element) => void): HTMLElement {
+  // LinkedIn's current feed: hashed class names, so rely on structure, roles and aria-labels.
+  // Legacy class-based selectors are kept as fallbacks in case the old markup comes back.
+  private findPosts(): Element[] {
+    // Every post card (feed, profile, activity) is a list item with its own Comment control
+    // (a link rather than a button in profile previews), but the surrounding list differs
+    // per page, so start from the Comment controls
+    const commentButtons = document.querySelectorAll('[aria-label="Comment"]');
+    const posts = new Set<Element>();
+    commentButtons.forEach((button) => {
+      const post = button.closest('[role="listitem"]');
+      if (post) {
+        posts.add(post);
+      }
+    });
+    if (posts.size > 0) {
+      return Array.from(posts);
+    }
+
+    const legacySelectors = [
+      '.feed-shared-update-v2[data-urn]',
+      '[data-urn*="urn:li:activity"]',
+      '.feed-shared-update-v2',
+    ];
+    for (const selector of legacySelectors) {
+      const legacyPosts = document.querySelectorAll(selector);
+      if (legacyPosts.length > 0) {
+        return Array.from(legacyPosts);
+      }
+    }
+
+    return [];
+  }
+
+  private findActionBar(post: Element): Element | null {
+    // New markup: Like / Comment / Repost / Send share one parent
+    const commentButton = post.querySelector('[aria-label="Comment"]');
+    if (commentButton?.parentElement) {
+      return commentButton.parentElement;
+    }
+
+    return (
+      post.querySelector('.feed-shared-social-action-bar') ||
+      post.querySelector('[class*="social-action"]')
+    );
+  }
+
+  public createSummarizeButton(
+    post: Element,
+    onClick: (post: Element) => void,
+    nativeClassName?: string
+  ): HTMLElement {
     // Create button container to match the platform's structure
     const container = document.createElement('div');
     container.className =
@@ -70,10 +108,11 @@ class DOMService {
     // Create the button with platform styling
     const button = document.createElement('button');
     button.className =
+      nativeClassName ||
       'artdeco-button artdeco-button--muted artdeco-button--3 artdeco-button--tertiary social-actions-button flex-wrap';
     button.setAttribute('aria-label', 'Summarize this post');
     button.setAttribute('type', 'button');
-    button.style.cssText = 'color: #0a66c2;'; // LinkedIn blue
+    button.style.cssText = 'color: #0a66c2; display: inline-flex; align-items: center; gap: 4px;'; // LinkedIn blue
 
     // Create icon (using a simple document/text icon)
     const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -119,36 +158,45 @@ class DOMService {
     postText: string;
     postUrn?: string;
   } {
-    // Get the post URN for identification
+    // Get the post URN for identification (legacy markup only)
     const postUrn = post.getAttribute('data-urn');
 
     // Get author information
-    let authorName = '';
-    let authorTitle = '';
+    let authorName =
+      post.querySelector('.update-components-actor__title')?.textContent?.trim() || '';
+    let authorTitle =
+      post.querySelector('.update-components-actor__description')?.textContent?.trim() || '';
 
-    const actorTitle = post.querySelector('.update-components-actor__title');
-    if (actorTitle) {
-      authorName = actorTitle.textContent?.trim() || '';
+    // New markup: the post's control menu is labelled "Open control menu for post by <author>"
+    if (!authorName) {
+      const menuLabel =
+        post
+          .querySelector('[aria-label^="Open control menu for post by "]')
+          ?.getAttribute('aria-label') || '';
+      authorName = menuLabel.replace('Open control menu for post by ', '').trim();
     }
 
-    const actorDescription = post.querySelector('.update-components-actor__description');
-    if (actorDescription) {
-      authorTitle = actorDescription.textContent?.trim() || '';
+    // New markup: the header block is labelled "<author> Verified Profile 3rd+" etc.,
+    // and the author's title sits in the next sibling of its first branching ancestor
+    if (authorName && !authorTitle) {
+      let node = post.querySelector(`div[aria-label^="${CSS.escape(authorName)}"]`);
+      while (node && node !== post && node.parentElement?.childElementCount === 1) {
+        node = node.parentElement;
+      }
+      authorTitle = node?.nextElementSibling?.textContent?.trim() || '';
     }
 
     // Get the post text content
-    const postContent = post.querySelector('.update-components-text');
     let postText = '';
-
-    if (postContent) {
-      postText = postContent.textContent?.trim() || '';
-    }
-
-    // If no content found with primary selector, try alternatives
-    if (!postText) {
-      const altContent = post.querySelector('[class*="commentary"]');
-      if (altContent) {
-        postText = altContent.textContent?.trim() || '';
+    const contentSelectors = [
+      '[data-testid="expandable-text-box"]',
+      '.update-components-text',
+      '[class*="commentary"]',
+    ];
+    for (const selector of contentSelectors) {
+      postText = post.querySelector(selector)?.textContent?.trim() || '';
+      if (postText) {
+        break;
       }
     }
 
