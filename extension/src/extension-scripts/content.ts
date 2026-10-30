@@ -59,19 +59,15 @@ async function init() {
   // Inject toast styles
   uiService.injectToastStyles();
 
-  // Initialize Chrome AI
-  await aiService.initAI();
-
-  // Observe DOM changes to detect new posts as they load
-  // Use debouncing to prevent infinite loops
+  // Observe DOM changes to detect new posts as they load.
+  // Throttle rather than debounce: the feed mutates constantly (videos, timestamps),
+  // so a debounce could keep resetting and never add any buttons.
   let timeoutId: number | null = null;
   const observer = new MutationObserver((_mutations) => {
-    // Clear existing timeout
     if (timeoutId) {
-      clearTimeout(timeoutId);
+      return;
     }
 
-    // Only run after mutations stop for 500ms
     timeoutId = window.setTimeout(() => {
       domService.addSummarizeButtons(handleSummarizeClick);
       timeoutId = null;
@@ -82,6 +78,12 @@ async function init() {
     childList: true,
     subtree: true,
   });
+
+  domService.addSummarizeButtons(handleSummarizeClick);
+
+  // Initialize Chrome AI last: create() can stay pending while the model downloads,
+  // and that must not block the buttons from appearing
+  await aiService.initAI();
 }
 
 // Listen for messages from background script
