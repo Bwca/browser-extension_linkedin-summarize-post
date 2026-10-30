@@ -1,6 +1,6 @@
 {
   "name": "feedburner",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Browser extension to burn through your feed with AI-powered summaries",
   "author": "Volodymyr Yepishev",
   "scripts": {
